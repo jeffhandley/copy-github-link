@@ -41,7 +41,18 @@ chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
             const [ /* repo */, /* issue or pull number */ , ...remainingTitleParts] = titleParts;
             remainingTitleParts.reverse();
 
-            const issueOrPullTitle = remainingTitleParts.join(' · ');
+            let issueOrPullTitle = remainingTitleParts.join(' · ');
+
+            // Remove the author from pull request titles
+            if (pullOrIssues === 'pull') {
+                const titleWords = issueOrPullTitle.split(' ');
+                titleWords.reverse();
+
+                let [ /* author */, /* "by" */, ...remainingTitleWords] = titleWords;
+                remainingTitleWords.reverse();
+
+                issueOrPullTitle = remainingTitleWords.join(' ');
+            }
 
             linkTexts = [
                 `${org}/${repo}#${number}`,
