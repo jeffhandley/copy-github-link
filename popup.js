@@ -77,7 +77,7 @@ chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
 
                     anchor.className = 'clicked';
                     window.setTimeout(() => anchor.className = null, 250);
-                    // window.setTimeout(() => window.close(), 300);
+                    window.setTimeout(() => window.close(), 300);
                 };
 
                 const item = document.createElement("LI");
