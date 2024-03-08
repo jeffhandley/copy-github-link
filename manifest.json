@@ -1,45 +1,31 @@
 {
   "manifest_version": 3,
-  "name": "__MSG_appName__",
-  "description": "__MSG_appDesc__",
-  "version": "1.0.0",
-  "default_locale": "en",
+  "name": "Copy GitHub Link",
+  "description": "Copy a formatted GitHub link to a repository, issue, or pull request",
+  "version": "0.1.8",
   "icons": {
-    "128": "copy-github-link.png"
-  },
-  "commands": {
-    "_execute_action": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+Alt+C",
-        "mac": "MacCtrl+Shift+Alt+C"
-      }
-    },
-    "copy_as_format_1": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+Alt+1",
-        "mac": "MacCtrl+Shift+Alt+1"
-      },
-      "description": "Copy as optional format #1"
-    },
-    "copy_as_format_2": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+Alt+2",
-        "mac": "MacCtrl+Shift+Alt+2"
-      },
-      "description": "Copy as optional format #2"
-    }
+    "128": "copy-github-link-128.png"
   },
   "action": {
     "default_popup": "popup.html"
   },
-  "options_page": "options.html",
   "background": {
-    "service_worker": "src/background.ts"
+    "service_worker": "background.js"
   },
+  "host_permissions": [
+    "https://github.com/*/*",
+    "https://github.com/*/*/issues/*",
+    "https://github.com/*/*/pull/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [ "https://github.com/*" ],
+      "js": [ "content-script.js" ]
+    }
+  ],
   "permissions": [
     "activeTab",
     "clipboardWrite",
-    "scripting",
-    "storage"
+    "tabs"
   ]
 }
