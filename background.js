@@ -10,12 +10,10 @@ function setActionState(tabId, enabled, { org, repo, number }) {
     if (enabled) {
         chrome.action.enable(tabId);
         chrome.action.setIcon({ path: 'copy-github-link-128.png' });
-        chrome.action.setTitle({ title: `${org}/${repo}#${number}` });
     }
     else {
         chrome.action.disable(tabId);
         chrome.action.setIcon({ path: 'copy-github-link-disabled-128.png' });
-        chrome.action.setTitle({ title: 'Copy GitHub Link' });
     }
 }
 

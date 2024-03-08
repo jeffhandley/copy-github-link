@@ -30,6 +30,7 @@ chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
                 `https://github.com/${org}/${repo}`,
                 `github.com/${org}/${repo}`,
                 `${org}/${repo}`,
+                `${repo}`,
                 ''
             ];
         }
