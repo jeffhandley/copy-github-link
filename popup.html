@@ -1,13 +1,52 @@
-<html>
+<html lang="en">
   <head>
-    <link
-      rel="stylesheet"
-      href="/assets/styles/salesforce-lightning-design-system.min.css"
-    />
-  </head>
+    <meta charset="UTF-8" />
+    <title>Copy GitHub Issue/PR Link</title>
+    <style>
+      BODY {
+        background-image: url('copy-github-link-128.png');
+        background-position: center;
+        background-repeat: no-repeat;
+        margin: 0;
+      }
 
+      UL#links {
+        background-color: rgba(255, 255, 255, 0.8);
+        margin: 0;
+        padding: 10px 20px;
+        list-style-type: none;
+      }
+
+      UL#links LI {
+        margin: 0 8px;
+      }
+
+      UL LI.last-in-group {
+        padding-bottom: 6px;
+      }
+
+      UL#links A, UL#links A:active, UL#links A:visited {
+        color: royalblue;
+        text-decoration: none;
+        font-size: larger;
+        font-weight: bolder;
+        text-wrap: nowrap;
+      }
+
+      UL#links ::marker {
+        content: '📋 ';
+      }
+
+      UL#links A.clicked {
+        color: darkgreen;
+        background-color: rgba(255, 255, 0, 0.5);
+      }
+
+    </style>
+  </head>
   <body>
-    <div id="root" class="popupContainer"></div>
-    <script type="module" src="/src/popup/index.tsx"></script>
+    <ul id="links"></ul>
+
+    <script src="popup.js"></script>
   </body>
 </html>
