@@ -74,7 +74,7 @@ chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
                 anchor.innerText = text;
                 anchor.href = url;
                 anchor.onclick = () => {
-                    chrome.tabs.sendMessage(id, { url, text });
+                    chrome.tabs.sendMessage(id, { type: "copy", url, text });
 
                     anchor.className = 'clicked';
                     window.setTimeout(() => anchor.className = null, 250);
