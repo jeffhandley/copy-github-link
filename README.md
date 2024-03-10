@@ -1,13 +1,17 @@
-# Chromium Extension: Copy GitHub Link
+# Copy GitHub Link - Chromium Extension
 
-Copy a formatted GitHub link to a repository, issue, or pull request. Each link available is copied to the clipboard using the full URL of the current page, with the text of the link in the following formats. Not all link formats are applicable for all GitHub URLs, so any format that is not applicable for the current page is ommitted. Clicking on one of the links copies it to the clipboard in both plain text format (just the text, without the URL) and as an HTML link.
+Copy formatted GitHub links for issues, pull requests, and more.
+
+The link you select is copied to the clipboard using the full URL of the current page, with the text copied available in many formats. Links are copied to the clipboard in both plain text format (just the text, without the URL) and as a hyperlink to the current page's full URL.
 
 ## Links Available Through the Extension Popup
+
+Not all link formats are applicable for all GitHub URLs, so any format that is not applicable for the current page is omitted.
 
 * When viewing an issues or a pull request
   * `{org}/{repo}#{number}`
   * `#{number}`
-  * `{title}` (for pull requests, the "by {author}" suffix is removed from the title)
+  * `{title}`
   * `{title} (#{number})`
   * `{title} ({org}/{repo}#{number})`
 * For any GitHub URL within an org/repo
@@ -21,7 +25,7 @@ Copy a formatted GitHub link to a repository, issue, or pull request. Each link 
   * `github.com/{pathname}#{hashname}`
   * `github.com/{pathname}`
 
-Links to pull requests that include the title remove the " by {author} · Pull Request #{number} · {org}/{repo}" suffix.
+Links to pull requests remove the " by {author} · Pull Request #{number} · {org}/{repo}" suffix from the title.
 
 ## Acknowledgements
 

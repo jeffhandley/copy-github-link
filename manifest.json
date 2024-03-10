@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Copy GitHub Link",
-  "description": "Copy a formatted GitHub link to a repository, issue, or pull request",
+  "description": "Copy formatted GitHub links for issues, pull requests, and more.",
   "version": "0.1.8",
   "icons": {
     "128": "copy-github-link-128.png"
