@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "Copy GitHub Link",
+  "description": "Copy a formatted GitHub link to a repository, issue, or pull request",
+  "version": "0.1.8",
+  "icons": {
+    "128": "copy-github-link-128.png"
+  },
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "host_permissions": [
+    "https://github.com/*/*",
+    "https://github.com/*/*/issues/*",
+    "https://github.com/*/*/pull/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [ "https://github.com/*" ],
+      "js": [ "content-script.js" ]
+    }
+  ],
+  "permissions": [
+    "activeTab",
+    "clipboardWrite",
+    "tabs"
+  ]
+}
