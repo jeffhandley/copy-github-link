@@ -1,3 +1,4 @@
+const linkTarget = document.getElementById('link-target');
 const links = document.getElementById('links');
 
 chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
@@ -7,6 +8,9 @@ chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
         const { id, title, url } = tabs[0];
         const { origin, pathname, hash } = new URL(url);
         const [, org, repo, pullOrIssues, number] = pathname.split('/');
+
+        const linkTargetAnchor = document.createElement("A");
+        linkTarget.innerText = url;
 
         let linkTexts = [
             `${url}`,
@@ -73,6 +77,8 @@ chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
                 const anchor = document.createElement("A");
                 anchor.innerText = text;
                 anchor.href = url;
+                anchor.title = `Click to copy this link to the clipboard.\nText: ${text}\nURL: ${url}`;
+
                 anchor.onclick = () => {
                     chrome.tabs.sendMessage(id, { type: "copy", url, text });
 
