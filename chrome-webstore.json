@@ -1,0 +1,10 @@
+{
+    "singlePurposeDescription": "Copy formatted GitHub links",
+    "permissionJustifications": {
+        "activeTab": "Enable and disable the extension based on the active tab. Access the active tab's title and URL. Send a message to the active tab to perform the function of copying formatted links to the clipboard.",
+        "clipboardWrite": "The extension's purpose is to copy formatted links to the clipboard.",
+        "tabs": "Enable and disable the extension based on the active tab. Access the active tab's title and URL. Send a message to the active tab to perform the function of copying formatted links to the clipboard.",
+        "host": "Activate the extension on github.com URLs, allowing the extension to be enabled on GitHub pages, and then allowing the popup to communicate with the tab to perform a clipboard write.",
+        "remoteCode": false
+    }
+}
