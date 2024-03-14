@@ -27,6 +27,20 @@ Not all link formats are applicable for all GitHub URLs, so any format that is n
 
 Links to pull requests remove the " by {author} · Pull Request #{number} · {org}/{repo}" suffix from the title.
 
+## Usage, Demo, and Screenshots
+
+The extension enables itself on GitHub.com pages, and clicking the extension's icon in the toolbar opens the popup to copy a GitHub link. Clicking any of the links will copy that formatted link to the clipboard. When pasting from the clipboard, applications that accept rich text will paste the formatted link with the target URL pointing to the current page. Applications that receive only plain text will paste in the formatted text without it being a link. _Note that many applications support `Ctrl`+`Shift`+`V` (or `Cmd`+`Shift`+`V`) to paste as plain text._
+
+<img alt="Demo" src="screenshots/demo.gif" width="800" />
+
+<img alt="Pull Request" src="screenshots/pull-request.png" width="640" />
+
+<img alt="Issues" src="screenshots/issues.png" width="640" />
+
+<img alt="Repository" src="screenshots/repo.png" width="640" />
+
+<img alt="Organization" src="screenshots/org.png" width="640" />
+
 ## Acknowledgements
 
 This extension was originally inspired by @zaki-yama, and their [zaki-yama/copy-title-and-url-as-markdown: Chrome Extension: Quickly copy the title & url of current tab as Markdown style](https://github.com/zaki-yama/copy-title-and-url-as-markdown). Fun note, that extension was used to copy that link as Markdown.
