@@ -1,6 +1,11 @@
 const linkTarget = document.getElementById('link-target');
 const links = document.getElementById('links');
 
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    console.log('Popup received message', message, sender);
+    sendResponse('Response from popup');
+});
+
 chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     if (tabs && tabs.length == 1) {
         while (links.firstChild) links.removeChild(links.firstChild);
@@ -8,6 +13,10 @@ chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
         const { id, title, url } = tabs[0];
         const { origin, pathname, hash } = new URL(url);
         const [, org, repo, pullOrIssues, number] = pathname.split('/');
+
+        chrome.tabs.sendMessage(id, { greeting: 'from popup' }, response => {
+            console.log('Response to popup', response);
+        });
 
         const linkTargetAnchor = document.createElement("A");
         linkTarget.innerText = url;

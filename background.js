@@ -3,7 +3,12 @@ let iconPath = 'icons/copy-github-link-128-light-disabled.png';
 chrome.action.disable();
 chrome.action.setIcon({ path: iconPath });
 
-chrome.runtime.onMessage.addListener(({ type, darkMode }) => {
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    console.log('Background received message', message, sender);
+    sendResponse('Response from background');
+
+    const { type, darkMode } = message;
+
     if (type === "darkMode") {
         setIconDarkMode(darkMode);
     }
