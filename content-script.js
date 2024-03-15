@@ -1,30 +1,15 @@
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    console.log('Content-script received message', message, sender);
-    sendResponse('Response from content-script');
+function copyLinkToClipboard({ url, text }) {
+    const overrideCopyCommand = (event) => {
+        event.clipboardData.setData('text/plain', text);
+        event.clipboardData.setData('text/html', `<a href='${url}'>${text}</a>`);
 
-    const { type, url, text } = message;
+        event.preventDefault();
+    };
 
-    if (type === 'copy') {
-        const copyToClipboard = (event) => {
-            event.clipboardData.setData('text/plain', text);
-            event.clipboardData.setData('text/html', `<a href='${url}'>${text}</a>`);
-
-            event.preventDefault();
-        };
-
-        document.addEventListener('copy', copyToClipboard);
-        document.execCommand('copy');
-        document.removeEventListener('copy', copyToClipboard);
-    }
-});
-
-function detectDarkMode() {
-    const darkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    chrome.runtime.sendMessage({ type: 'darkMode', darkMode });
+    document.addEventListener('copy', overrideCopyCommand);
+    document.execCommand('copy');
+    document.removeEventListener('copy', overrideCopyCommand);
 }
-
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', detectDarkMode);
-detectDarkMode();
 
 function getGitHubLinks() {
     const url = location.href;
@@ -97,18 +82,36 @@ function getGitHubLinks() {
         { disabled: hasData.number, text: pathname.substring(1) },
 
         // Pull request and issue links
+        { disabled: !hasData.number, separator: true },
         { disabled: !hasData.number, text: `${origin}/${org}/${repo}` },
         { disabled: !hasData.number, text: `${hostname}/${org}/${repo}` },
         { disabled: !hasData.number, text: `${org}/${repo}` },
-        { disabled: !hasData.number, text: repo },
-        { disabled: !hasData.number, separator: true },
+        { disabled: !hasData.number, text: repo }
     ];
 }
 
-async function sendMessageToExtension(message) {
-    const response = await chrome.runtime.sendMessage(message);
-    console.log('Content-script received response', response);
+function monitorDarkMode() {
+    const queryDarkMode = () => window.matchMedia('(prefers-color-scheme: dark)');
+
+    const reportDarkMode = () => chrome.runtime.sendMessage({
+        type: 'setDarkMode',
+        darkMode: queryDarkMode().matches
+    });
+
+    queryDarkMode().addEventListener('change', reportDarkMode);
+    reportDarkMode();
 }
 
-const links = getGitHubLinks();
-sendMessageToExtension(links);
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    const { type } = message;
+
+    switch (message.type) {
+        case 'getLinks':
+            return sendResponse(getGitHubLinks());
+
+        case 'copyLink':
+            return copyLinkToClipboard(message);
+    }
+});
+
+monitorDarkMode();

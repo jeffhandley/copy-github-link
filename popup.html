@@ -33,13 +33,13 @@
         margin-bottom: 8px;
       }
 
-      UL#links {
+      UL {
         margin: 0;
         padding: 10px 20px;
         list-style-type: none;
       }
 
-      UL#links LI {
+      UL LI {
         margin: 0 8px;
       }
 
@@ -47,7 +47,7 @@
         padding-bottom: 6px;
       }
 
-      UL#links A, UL#links A:active, UL#links A:visited {
+      UL A, UL A:active, UL A:visited {
         color: royalblue;
         text-decoration: none;
         font-size: larger;
@@ -55,11 +55,11 @@
         text-wrap: nowrap;
       }
 
-      UL#links ::marker {
+      UL ::marker {
         content: '📋 ';
       }
 
-      UL#links A.clicked {
+      UL A.clicked {
         color: darkgreen;
         background-color: rgba(255, 255, 0, 0.5);
       }
@@ -69,7 +69,7 @@
   <body>
     <h1>Copy GitHub Link</h1>
     <h2 id="link-target"></h2>
-    <ul id="links"></ul>
+    <ul id="link-list"></ul>
 
     <script src="popup.js"></script>
   </body>

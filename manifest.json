@@ -2,9 +2,9 @@
   "manifest_version": 3,
   "name": "Copy GitHub Link",
   "description": "Copy formatted GitHub links for issues, pull requests, and more.",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "icons": {
-    "128": "icons/copy-github-link-128-light-disabled.png"
+    "128": "icons/copy-github-link-128-dark-disabled.png"
   },
   "action": {
     "default_popup": "popup.html"
@@ -26,6 +26,7 @@
   "permissions": [
     "activeTab",
     "clipboardWrite",
-    "tabs"
+    "tabs",
+    "contextMenus"
   ]
 }

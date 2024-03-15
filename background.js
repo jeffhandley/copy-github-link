@@ -1,16 +1,13 @@
+const rootMenuId = 'Root Menu: copy-github-link';
 let iconPath = 'icons/copy-github-link-128-light-disabled.png';
 
 chrome.action.disable();
 chrome.action.setIcon({ path: iconPath });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    console.log('Background received message', message, sender);
-    sendResponse('Response from background');
-
-    const { type, darkMode } = message;
-
-    if (type === "darkMode") {
-        setIconDarkMode(darkMode);
+    switch (message.type) {
+        case 'setDarkMode':
+            return setIconDarkMode(message.darkMode);
     }
 });
 
@@ -46,12 +43,36 @@ function setActionState(tabId, enabled, { org, repo, number }) {
 async function checkTab(tab) {
     const window = await chrome.windows.getLastFocused();
 
+    chrome.contextMenus.removeAll();
+
     if (tab && tab.id && tab.url) {
         const { origin, pathname } = new URL(tab.url);
         const [, org, repo, pullOrIssues, number] = pathname.split('/');
 
-        let enabled = origin === 'https://github.com' && !!org;
+        const enabled = origin === 'https://github.com' && !!org;
         setActionState(tab.id, enabled, { org, repo, number });
+
+        const rootMenu = chrome.contextMenus.create({
+            id: rootMenuId,
+            documentUrlPatterns: [ 'https://github.com/*' ],
+            title: 'Copy GitHub Link',
+            enabled
+        });
+
+        if (enabled) {
+            chrome.tabs.sendMessage(tab.id, { type: 'getLinks' }, links => {
+                if (!chrome.runtime.lastError && links && links.length > 0) {
+                    links.filter(l => !l.disabled).forEach(({ text, separator }, index) => {
+                        chrome.contextMenus.create({
+                            parentId: rootMenuId,
+                            id: text || `separator_${index}`,
+                            title: text,
+                            type: separator ? 'separator' : 'normal'
+                        });
+                    });
+                }
+            });
+        }
     }
 }
 
@@ -65,4 +86,14 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 
 chrome.tabs.onActivated.addListener((result) => {
     chrome.tabs.get(result.tabId, checkTab);
+});
+
+chrome.contextMenus.onClicked.addListener(menuClick => {
+    const { menuItemId, parentMenuItemId } = menuClick;
+
+    if (parentMenuItemId === rootMenuId) {
+        getCurrentTab().then(({id, url}) => {
+            chrome.tabs.sendMessage(id, { type: "copyLink", url, text: menuItemId });
+        });
+    }
 });
