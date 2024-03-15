@@ -13,30 +13,32 @@ chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
         linkTarget.innerText = url;
 
         chrome.tabs.sendMessage(id, { type: 'getLinks' }, links => {
-            links.filter(l => !l.disabled).forEach(({ text, separator }) => {
-                if (separator && linkList.lastChild) {
-                    linkList.lastChild.className = 'last-in-group';
-                }
+            if (!chrome.runtime.lastError && links && links.length > 0) {
+                links.filter(l => !l.disabled).forEach(({ text, separator }) => {
+                    if (separator && linkList.lastChild) {
+                        linkList.lastChild.className = 'last-in-group';
+                    }
 
-                if (text) {
-                    const anchor = document.createElement("A");
-                    anchor.innerText = text;
-                    anchor.href = url;
-                    anchor.title = `Click to copy this link to the clipboard.\n\nText:\n${text}\n\nURL:\n${url}`;
+                    if (text) {
+                        const anchor = document.createElement("A");
+                        anchor.innerText = text;
+                        anchor.href = url;
+                        anchor.title = `Click to copy this link to the clipboard.\n\nText:\n${text}\n\nURL:\n${url}`;
 
-                    anchor.onclick = () => {
-                        chrome.tabs.sendMessage(id, { type: "copyLink", url, text });
+                        anchor.onclick = () => {
+                            chrome.tabs.sendMessage(id, { type: "copyLink", url, text });
 
-                        anchor.className = 'clicked';
-                        window.setTimeout(() => anchor.className = null, 250);
-                        window.setTimeout(() => window.close(), 300);
-                    };
+                            anchor.className = 'clicked';
+                            window.setTimeout(() => anchor.className = null, 250);
+                            window.setTimeout(() => window.close(), 300);
+                        };
 
-                    const item = document.createElement("LI");
-                    item.appendChild(anchor);
-                    linkList.appendChild(item);
-                }
-            });
+                        const item = document.createElement("LI");
+                        item.appendChild(anchor);
+                        linkList.appendChild(item);
+                    }
+                });
+            }
         });
     }
 });

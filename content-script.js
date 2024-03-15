@@ -90,18 +90,6 @@ function getGitHubLinks() {
     ];
 }
 
-function monitorDarkMode() {
-    const queryDarkMode = () => window.matchMedia('(prefers-color-scheme: dark)');
-
-    const reportDarkMode = () => chrome.runtime.sendMessage({
-        type: 'setDarkMode',
-        darkMode: queryDarkMode().matches
-    });
-
-    queryDarkMode().addEventListener('change', reportDarkMode);
-    reportDarkMode();
-}
-
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     const { type } = message;
 
@@ -113,5 +101,3 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             return copyLinkToClipboard(message);
     }
 });
-
-monitorDarkMode();

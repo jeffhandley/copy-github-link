@@ -4,7 +4,9 @@
   "description": "Copy formatted GitHub links for issues, pull requests, and more.",
   "version": "1.1.0",
   "icons": {
-    "128": "icons/copy-github-link-128-dark-disabled.png"
+    "32": "images/icon-32-enabled.png",
+    "64": "images/icon-64-enabled.png",
+    "128": "images/icon-128-enabled.png"
   },
   "action": {
     "default_popup": "popup.html"

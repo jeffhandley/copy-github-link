@@ -1,43 +1,32 @@
 const rootMenuId = 'Root Menu: copy-github-link';
-let iconPath = 'icons/copy-github-link-128-light-disabled.png';
 
 chrome.action.disable();
-chrome.action.setIcon({ path: iconPath });
+updateIcon(false);
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    switch (message.type) {
-        case 'setDarkMode':
-            return setIconDarkMode(message.darkMode);
-    }
-});
+function updateIcon(enabled) {
+    chrome.action.setIcon({
+        path: {
+            "32": `images/icon-32-${(enabled ? 'enabled' : 'disabled')}.png`,
+            "64": `images/icon-64-${(enabled ? 'enabled' : 'disabled')}.png`,
+            "128": `images/icon-128-${(enabled ? 'enabled' : 'disabled')}.png`
+        }
+    })
+}
 
 async function getCurrentTab() {
     let [tab] = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
     return tab;
 }
 
-function setIconDarkMode(darkMode) {
-    if (darkMode) {
-        iconPath = iconPath.replace('-light', '-dark');
-    }
-    else {
-        iconPath = iconPath.replace('-dark', '-light');
-    }
-
-    chrome.action.setIcon({ path: iconPath });
-}
-
 function setActionState(tabId, enabled, { org, repo, number }) {
     if (enabled) {
         chrome.action.enable(tabId);
-        iconPath = iconPath.replace('-disabled', '-enabled');
     }
     else {
         chrome.action.disable(tabId);
-        iconPath = iconPath.replace('-enabled', '-disabled');
     }
 
-    chrome.action.setIcon({ path: iconPath });
+    updateIcon(enabled);
 }
 
 async function checkTab(tab) {
