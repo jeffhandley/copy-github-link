@@ -3,13 +3,14 @@ export default function getGitHubLinks(url, title) {
     const [, org, repo, ...pathSegments ] = pathname.split('/');
 
     let isPull = false, isIssue = false, isPullOrIssue = false, number = null;
+    let isBlob = false, blobPath = null;
 
     if (!!org && !!repo && pathSegments.length >= 2) {
-        const [ pullOrIssueSegment, numberSegment ] = pathSegments;
-        const parsedNumber = parseInt(numberSegment);
+        const [ appRoute, appPathRoot, ...appPathSegments ] = pathSegments;
+        const parsedNumber = parseInt(appPathRoot);
 
-        isPull = pullOrIssueSegment === 'pull' && !Number.isNaN(parsedNumber);
-        isIssue = pullOrIssueSegment === 'issues' && !Number.isNaN(parsedNumber);
+        isPull = appRoute === 'pull' && !Number.isNaN(parsedNumber);
+        isIssue = appRoute === 'issues' && !Number.isNaN(parsedNumber);
         isPullOrIssue = isPull || isIssue;
         number = isPullOrIssue ? parsedNumber : null;
 
@@ -34,6 +35,16 @@ export default function getGitHubLinks(url, title) {
                 title = remainingTitleWords.join(' ');
             }
         }
+        else {
+            isBlob = (appRoute === 'blob' || appRoute === 'tree') && appPathRoot;
+
+            if (isBlob && appPathSegments.length > 0) {
+                blobPath = appPathSegments.join('/');
+            }
+            else if (isBlob) {
+                blobPath = appPathRoot;
+            }
+        }
     }
 
     const hasData = {
@@ -41,7 +52,8 @@ export default function getGitHubLinks(url, title) {
         repo: !!repo,
         number: !!number,
         title: !!number && !!title,
-        hash: !!hash
+        hash: !!hash,
+        blob: !!blobPath
     };
 
     return [
@@ -75,6 +87,10 @@ export default function getGitHubLinks(url, title) {
         { disabled: !hasData.number, text: `${origin}/${org}/${repo}` },
         { disabled: !hasData.number, text: `${hostname}/${org}/${repo}` },
         { disabled: !hasData.number, text: `${org}/${repo}` },
-        { disabled: !hasData.number, text: repo }
+        { disabled: !hasData.number, text: repo },
+
+        // Blob links
+        { disabled: !hasData.blob, separator: true },
+        { disabled: !hasData.blob, text: blobPath },
     ];
 }
