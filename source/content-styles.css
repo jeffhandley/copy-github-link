@@ -1,0 +1,16 @@
+UL.copy-github-link-list {
+    padding: 10px 20px;
+    list-style-type: none;
+}
+UL.copy-github-link-list LI {
+    margin: 0 8px;
+}
+UL.copy-github-link-list ::marker {
+    content: '📋 ';
+}
+UL.copy-github-link-list LI.copy-github-link-separator {
+    padding-bottom: 6px;
+}
+UL.copy-github-link-list LI A.copy-github-link-clicked {
+    color: darkred;
+}

@@ -2,77 +2,14 @@
   <head>
     <meta charset="UTF-8" />
     <title>Copy GitHub Issue/PR Link</title>
-    <style>
-      HTML {
-        background-image: url('images/logo-256.png');
-        background-color: #FCFEF3;
-        background-position: center;
-        background-repeat: no-repeat;
-        margin: 0;
-      }
-
-      BODY {
-        background-color: rgba(255, 255, 255, 0.8);
-        margin: 12px;
-        padding: 0;
-        height: 100%;
-        color: #003650;
-      }
-
-      H1 {
-        margin-bottom: 4px;
-        font-size: 1.4em;
-      }
-
-      H2 {
-        margin-top: 0;
-        margin-bottom: 4px;
-        font-size: 1.1em;
-        font-weight: normal;
-      }
-
-      #link-target {
-        margin-bottom: 8px;
-      }
-
-      UL {
-        margin: 0;
-        padding: 10px 20px;
-        list-style-type: none;
-      }
-
-      UL LI {
-        margin: 0 8px;
-      }
-
-      UL LI.last-in-group {
-        padding-bottom: 6px;
-      }
-
-      UL A, UL A:active, UL A:visited {
-        color: #00628C;
-        text-decoration: none;
-        font-size: larger;
-        font-weight: bolder;
-        text-wrap: nowrap;
-      }
-
-      UL ::marker {
-        content: '📋 ';
-      }
-
-      UL A.clicked {
-        color: darkgreen;
-        background-color: rgba(255, 255, 0, 0.5);
-      }
-
-    </style>
+    <link rel="stylesheet" href="popup.css" />
+    <link rel="stylesheet" href="content-styles.css" />
   </head>
   <body>
     <h1>Copy GitHub Link</h1>
     <h2 id="link-target"></h2>
-    <ul id="link-list"></ul>
+    <ul id="link-list" class="copy-github-link-list"></ul>
 
-    <script src="popup.js"></script>
+    <script type="module" src="popup.js"></script>
   </body>
 </html>

@@ -12,23 +12,21 @@
     "default_popup": "popup.html"
   },
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "service-worker.js",
+    "type": "module"
   },
-  "host_permissions": [
-    "https://github.com/*/*",
-    "https://github.com/*/*/issues/*",
-    "https://github.com/*/*/pull/*"
-  ],
   "content_scripts": [
     {
       "matches": [ "https://github.com/*" ],
-      "js": [ "content-script.js" ]
+      "js": [ "content-script.js" ],
+      "css": [ "content-styles.css" ]
     }
   ],
+  "host_permissions": [
+    "https://github.com/*"
+  ],
   "permissions": [
-    "activeTab",
     "clipboardWrite",
-    "tabs",
-    "contextMenus"
+    "scripting"
   ]
 }

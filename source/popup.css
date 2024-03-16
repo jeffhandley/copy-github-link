@@ -1,0 +1,38 @@
+HTML {
+  background-image: url('images/logo-256.png');
+  background-color: #FCFEF3;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin: 0;
+}
+
+BODY {
+  background-color: rgba(255, 255, 255, 0.9);
+  margin: 12px;
+  padding: 0;
+  height: 100%;
+  color: #003650;
+}
+
+H1 {
+  margin-bottom: 4px;
+  font-size: 1.4em;
+}
+
+H2 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  font-size: 1.1em;
+  font-weight: normal;
+}
+
+UL.copy-github-link-list {
+  margin: 0;
+}
+
+UL.copy-github-link-list LI A, UL.copy-github-link-list LI A:active, UL.copy-github-link-list LI A:visited {
+  color: #0969DA;
+  text-decoration: none;
+  font-size: larger;
+  text-wrap: nowrap;
+}
