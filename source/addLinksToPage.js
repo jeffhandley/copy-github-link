@@ -2,7 +2,7 @@ export default function addLinksToPage(links) {
     const url = location.href;
     const logoUrl = chrome.runtime.getURL('images/logo-256.png');
 
-    function createLinkButton(buttonClass = '') {
+    function createLinkButton(includeTextLabel, buttonClass = '') {
         const linkDetails = document.createElement('details');
         linkDetails.id = 'copy-github-link-details';
         linkDetails.className = 'position-relative details-overlay details-reset hx_dropdown-fullscreen';
@@ -36,10 +36,12 @@ export default function addLinksToPage(links) {
 
                     linkButton.appendChild(linkButtonIcon);
 
-                    const linkButtonText = document.createElement('span');
-                    linkButtonText.className = 'Button-label';
-                    linkButtonText.innerText = 'Link';
-                    linkButton.appendChild(linkButtonText);
+                    if (includeTextLabel) {
+                        const linkButtonText = document.createElement('span');
+                        linkButtonText.className = 'Button-label';
+                        linkButtonText.innerText = 'Link';
+                        linkButton.appendChild(linkButtonText);
+                    }
 
                     const linkButtonDropdown = document.createElement('span');
                     linkButtonDropdown.className = 'Button-visual Button-trailingAction';
@@ -76,11 +78,11 @@ export default function addLinksToPage(links) {
 
                             const linkPopupTitle = document.createElement('h4');
                             linkPopupTitle.innerText = 'Copy GitHub Link';
-                            linkPopupBody.appendChild(linkPopupTitle);
+                            linkPopupBodyContent.appendChild(linkPopupTitle);
 
                             const linkPopupSubtitle = document.createElement('h5');
                             linkPopupSubtitle.innerText = url;
-                            linkPopupBody.appendChild(linkPopupSubtitle);
+                            linkPopupBodyContent.appendChild(linkPopupSubtitle);
 
                             if (links && links.length) {
                                 const linkList = document.createElement('ul');
@@ -122,9 +124,9 @@ export default function addLinksToPage(links) {
         return linkDetails;
     }
 
-    function renderLinkButton(header, containerId, buttonClass) {
+    function renderLinkButton(header, containerId, includeTextLabel, buttonClass) {
         const existing = document.getElementById(containerId);
-        const linkButton = createLinkButton(buttonClass);
+        const linkButton = createLinkButton(includeTextLabel, buttonClass);
 
         const linkContainer = document.createElement('div');
         linkContainer.id = containerId;
@@ -143,10 +145,10 @@ export default function addLinksToPage(links) {
     const [pullRequestOrIssueHeader] = [...document.getElementsByClassName('gh-header-actions')];
 
     if (appHeader) {
-        renderLinkButton(appHeader, 'copy-github-link-appheader', 'AppHeader-button');
+        renderLinkButton(appHeader, 'copy-github-link-appheader', false, 'AppHeader-button');
     }
 
     if (pullRequestOrIssueHeader) {
-        renderLinkButton(pullRequestOrIssueHeader, 'copy-github-link-pullorissue');
+        renderLinkButton(pullRequestOrIssueHeader, 'copy-github-link-pullorissue', true);
     }
 }

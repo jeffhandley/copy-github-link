@@ -5,6 +5,7 @@ HTML {
   margin: 0;
   width: max-content;
   max-width: 800px;
+  min-height: 256px;
 }
 
 BODY {
@@ -12,6 +13,7 @@ BODY {
   margin: 12px;
   padding: 0;
   color: #003650;
+  min-height: 256px;
 }
 
 H1 {

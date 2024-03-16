@@ -67,6 +67,9 @@ export default function getGitHubLinks(url, title) {
         // For pages other than pull requests and issues, provide the path to the page excluding the leading /
         { disabled: hasData.number, text: pathname.substring(1) },
 
+        // Provide a link to the user if viewing a profile
+        { disabled: !hasData.org || hasData.repo, text: `@${org}` },
+
         // Pull request and issue links
         { disabled: !hasData.number, separator: true },
         { disabled: !hasData.number, text: `${origin}/${org}/${repo}` },
