@@ -2,7 +2,9 @@
 
 Copy formatted GitHub links for issues, pull requests, and more.
 
-The link you select is copied to the clipboard using the full URL of the current page, with the text copied available in many formats. Links are copied to the clipboard in both plain text format (just the text, without the URL) and as a hyperlink to the current page's full URL.
+Generates formatted GitHub links that can be copied to the clipboard from any github.com page. Using either the extension icon in the toolbar or one of the link dropdown buttons added to the github.com UI, a popup is shown with a list of convenient formats for the current page. Clicking any of the links will copy a link in that format to your clipboard.
+
+The link is copied using the full URL of the current page and the text of the format selected. Links are copied in both plain text format (just the text, without the URL) and as a hyperlink to the current page's full URL.
 
 ## Links Available Through the Extension Popup
 

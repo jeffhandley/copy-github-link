@@ -1,0 +1,25 @@
+{
+    "description": "Generates formatted GitHub links that can be copied to the clipboard from any github.com page. Using either the extension icon in the toolbar or one of the link dropdown buttons added to the github.com UI, a popup is shown with a list of convenient formats for the current page. Clicking any of the links will copy a link in that format to your clipboard.\n\nThe link is copied using the full URL of the current page and the text of the format selected. Links are copied in both plain text format (just the text, without the URL) and as a hyperlink to the current page's full URL.",
+    "category": "Developer Tools",
+    "language": "English (United States)",
+    "storeIcon": "source/images/logo-128.png",
+    "screenshots": [
+        "screenshots/pull-request.png",
+        "screenshots/issues.png",
+        "screenshots/repo.png",
+        "screenshots/org.png"
+    ],
+    "smallPromoTile": "screenshots/small-promo-tile",
+    "marqueePromoTile": "screenshots/marquee-promo-tile",
+    "homepageUrl": "https://github.com/jeffhandley/copy-github-link",
+    "supportUrl": "https://github.com/jeffhandley/copy-github-link/issues",
+    "matureContent": false,
+    "singlePurposeDescription": "Copy formatted GitHub links",
+    "permissionJustifications": {
+        "activeTab": "Enable and disable the extension based on the active tab. Access the active tab's title and URL. Send a message to the active tab to perform the function of copying formatted links to the clipboard.",
+        "clipboardWrite": "The extension's purpose is to copy formatted links to the clipboard.",
+        "tabs": "Enable and disable the extension based on the active tab. Access the active tab's title and URL. Send a message to the active tab to perform the function of copying formatted links to the clipboard.",
+        "host": "Activate the extension on github.com URLs, allowing the extension to be enabled on GitHub pages, and then allowing the popup to communicate with the tab to perform a clipboard write.",
+        "remoteCode": false
+    }
+}
