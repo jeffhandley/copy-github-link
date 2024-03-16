@@ -1,0 +1,37 @@
+.copy-github-link-container div.dropdown-menu {
+    top:6px;
+    width: max-content;
+    max-width: calc(100vw - 320px);
+}
+.copy-github-link-container .dropdown-menu div {
+    margin: 12px;
+}
+.copy-github-link-container h5 {
+    font-weight: normal;
+}
+.copy-github-link-body {
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 256px;
+}
+.copy-github-link-body div {
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 0;
+  min-height: 256px;
+}
+UL.copy-github-link-list {
+    padding: 10px 0px 10px 20px;
+    list-style-type: none;
+}
+UL.copy-github-link-list LI {
+    margin: 0 8px;
+}
+UL.copy-github-link-list ::marker {
+    content: '📋 ';
+}
+UL.copy-github-link-list LI.copy-github-link-separator {
+    padding-bottom: 6px;
+}
+UL.copy-github-link-list LI A.copy-github-link-clicked {
+    color: darkred;
+}
