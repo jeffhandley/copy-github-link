@@ -25,12 +25,14 @@ chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
                         anchor.href = url;
                         anchor.title = `Click to copy this link to the clipboard.\n\nText:\n${text}\n\nURL:\n${url}`;
 
-                        anchor.onclick = () => {
+                        anchor.onclick = event => {
                             chrome.tabs.sendMessage(id, { type: "copyLink", url, text });
 
                             anchor.className = 'clicked';
                             window.setTimeout(() => anchor.className = null, 250);
                             window.setTimeout(() => window.close(), 300);
+
+                            event.preventDefault();
                         };
 
                         const item = document.createElement("LI");
