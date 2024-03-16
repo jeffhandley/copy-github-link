@@ -22,6 +22,12 @@
       "css": [ "content-styles.css" ]
     }
   ],
+  "web_accessible_resources": [
+    {
+      "resources": [ "images/logo-256.png"],
+      "matches": [ "https://github.com/*" ]
+    }
+  ],
   "host_permissions": [
     "https://github.com/*"
   ],

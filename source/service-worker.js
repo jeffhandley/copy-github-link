@@ -1,6 +1,6 @@
 import isGitHub from './isGitHub.js';
 import getGitHubLinks from './getGitHubLinks.js';
-import addLinksToPullOrIssueHeader from './addLinksToPullOrIssueHeader.js';
+import addLinksToPage from './addLinksToPage.js';
 
 getCurrentTab().then(tab => setActionState(isGitHub(tab)));
 
@@ -37,7 +37,7 @@ async function tabLoaded(tab) {
         }).then(([{result: links}]) => {
             chrome.scripting.executeScript({
                 target: { tabId: tab.id },
-                func: addLinksToPullOrIssueHeader,
+                func: addLinksToPage,
                 args: [links]
             });
         });

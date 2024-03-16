@@ -1,16 +1,16 @@
 HTML {
   background-image: url('images/logo-256.png');
-  background-color: #FCFEF3;
   background-position: center;
   background-repeat: no-repeat;
   margin: 0;
+  width: max-content;
+  max-width: 800px;
 }
 
 BODY {
   background-color: rgba(255, 255, 255, 0.9);
   margin: 12px;
   padding: 0;
-  height: 100%;
   color: #003650;
 }
 
@@ -34,5 +34,8 @@ UL.copy-github-link-list LI A, UL.copy-github-link-list LI A:active, UL.copy-git
   color: #0969DA;
   text-decoration: none;
   font-size: larger;
-  text-wrap: nowrap;
+}
+
+UL.copy-github-link-list LI A:hover {
+  text-decoration: underline;
 }
