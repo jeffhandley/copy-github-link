@@ -7,7 +7,8 @@
         "screenshots/pull-request.png",
         "screenshots/issues.png",
         "screenshots/repo.png",
-        "screenshots/org.png"
+        "screenshots/org.png",
+        "screenshots/code-file.png"
     ],
     "smallPromoTile": "screenshots/small-promo-tile",
     "marqueePromoTile": "screenshots/marquee-promo-tile",
