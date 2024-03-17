@@ -1,0 +1,22 @@
+BODY {
+    margin-left: 64px;
+}
+H1 {
+    margin-left: -40px;
+}
+H1 IMG#logo {
+    vertical-align: text-bottom;
+}
+FIELDSET {
+    width: 800px;
+    margin-bottom: 16px;
+}
+FIELDSET LEGEND {
+    font-weight: bold;
+}
+FIELDSET DIV {
+    margin: 8px 0;
+}
+FIELDSET TEXTAREA {
+    width: calc(100% - 8px);
+}

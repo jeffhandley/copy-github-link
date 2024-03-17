@@ -22,9 +22,10 @@
       "css": [ "content-styles.css" ]
     }
   ],
+  "options_page": "options.html",
   "web_accessible_resources": [
     {
-      "resources": [ "images/logo-256.png"],
+      "resources": [ "images/icon-32-enabled.png", "images/logo-256.png"],
       "matches": [ "https://github.com/*" ]
     }
   ],
@@ -33,6 +34,7 @@
   ],
   "permissions": [
     "clipboardWrite",
-    "scripting"
+    "scripting",
+    "storage"
   ]
 }

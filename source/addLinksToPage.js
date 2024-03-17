@@ -88,7 +88,7 @@ export default function addLinksToPage(links) {
                                 const linkList = document.createElement('ul');
                                 linkList.className = 'copy-github-link-list';
 
-                                links.filter(l => !l.disabled).forEach(({text, separator}) => {
+                                links.forEach(({text, separator}) => {
                                     if (separator && linkList.lastChild) {
                                         linkList.lastChild.className = 'copy-github-link-separator';
                                     }

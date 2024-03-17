@@ -1,6 +1,7 @@
-import isGitHub from './isGitHub.js';
-import getGitHubLinks from './getGitHubLinks.js';
 import addLinksToPage from './addLinksToPage.js';
+import defaultLinkFormats from './defaultLinkFormats.js';
+import getGitHubLinks from './getGitHubLinks.js';
+import isGitHub from './isGitHub.js';
 
 getCurrentTab().then(tab => setActionState(isGitHub(tab)));
 
@@ -33,7 +34,7 @@ async function tabLoaded(tab) {
         chrome.scripting.executeScript({
             target: { tabId: tab.id },
             func: getGitHubLinks,
-            args: [tab.url, tab.title]
+            args: [defaultLinkFormats, tab]
         }).then(([{result: links}]) => {
             chrome.scripting.executeScript({
                 target: { tabId: tab.id },

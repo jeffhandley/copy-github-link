@@ -1,3 +1,4 @@
+import defaultLinkFormats from './defaultLinkFormats.js';
 import isGitHub from './isGitHub.js';
 import getGitHubLinks from './getGitHubLinks.js';
 
@@ -14,7 +15,7 @@ chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
 
     while (linkList.firstChild) linkList.removeChild(linkList.firstChild);
 
-    getGitHubLinks(url, title).filter(l => !l.disabled).forEach(({ text, separator }) => {
+    getGitHubLinks(defaultLinkFormats, {url, title}).forEach(({ text, separator }) => {
         if (separator && linkList.lastChild) {
             linkList.lastChild.className = 'copy-github-link-separator';
         }

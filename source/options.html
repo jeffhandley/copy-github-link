@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Copy GitHub Link</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <h1><img id="logo" /> Copy GitHub Link</h1>
+
+    <fieldset style="width: 800px;">
+      <legend>Display Options</legend>
+
+      <div>
+        <input type="checkbox" name="addAppHeaderButton" id="addAppHeaderButton" checked="checked" />
+        <label for="addAppHeaderButton">Add link button to header for all github.com pages</label>
+      </div>
+
+      <div>
+        <input type="checkbox" name="addPullRequestIssueButton" id="addPullRequestIssueButton" checked="checked" />
+        <label for="addPullRequestIssueButton">Add link button to Pull Request and Issue pages</label>
+    </fieldset>
+
+    <fieldset style="width: 800px;">
+      <legend>Link Formats</legend>
+
+      <div>
+        <div><label>Repository Data Elements</label></div>
+        <pre>{org} {repo}</pre>
+      </div>
+
+      <div>
+        <div><label>Pull Request or Issue Data Elements</label></div>
+        <pre>{number} {title}</pre>
+      </div>
+
+      <div>
+        <div><label>Tree / Blob File Path Elements</label></div>
+        <pre>{filepath}</pre>
+      </div>
+
+      <div>
+        <div><label>URL Data Elements</label></div>
+        <pre>{url} {origin} {hostname} {pathname} {hash}</pre>
+      </div>
+
+      <div>
+        <div><label>Helper Elements</label></div>
+        <pre>{separator}</pre>
+      </div>
+
+      <textarea id="link-formats" cols="50" rows="30" wrap="off"></textarea>
+    </fieldset>
+
+    <button id="save">Save</button>
+    <button type="button" id="resetButton">Reset Defaults</button>
+
+    <div id="status"></div>
+
+    <script type="module" src="options.js"></script>
+  </body>
+</html>
