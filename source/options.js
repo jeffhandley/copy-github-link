@@ -1,4 +1,7 @@
-import defaultLinkFormats from './defaultLinkFormats.js';
+import defaultOptions from './defaultOptions.js';
+
+const logoImage = document.getElementById('logo');
+logoImage.src = chrome.runtime.getURL('images/icon-32-enabled.png');
 
 const disableAppHeaderElement = document.getElementById('disable-app-header');
 const disablePullRequestIssueElement = document.getElementById('disable-pullrequest-issue');
@@ -6,7 +9,17 @@ const linkFormatsTextArea = document.getElementById('link-formats');
 
 const saveButton = document.getElementById('save-button');
 const resetButton = document.getElementById('reset-button');
-const status = document.getElementById('status');
+const statusMessage = document.getElementById('status-message');
+let statusMessageTimeout = null;
+
+chrome.storage.sync.get(defaultOptions, renderOptions);
+
+saveButton.addEventListener('click', saveOptionsToStorage);
+
+resetButton.addEventListener('click', () => {
+  renderOptions(defaultOptions);
+  showStatus('Options restored to defaults, but not saved', 2500);
+});
 
 function convertLinkFormatsToText(linkFormats) {
   return linkFormats.reduce((text, format, index) =>
@@ -15,59 +28,34 @@ function convertLinkFormatsToText(linkFormats) {
   ) + '\n]\n';
 }
 
-// Saves options to chrome.storage
-const saveOptionsToStorage = () => {
-  chrome.storage.sync.set(
-    {
-      disableAppHeaderButton: !!disableAppHeaderElement.checked,
-      disablePullRequestIssueButton: !!disablePullRequestIssueElement.checked,
-      linkFormats: JSON.parse(linkFormatsTextArea.value)
-    },
-    () => {
-      status.textContent = 'Options saved';
-      setTimeout(() => status.textContent = '', 750);
-    }
-  );
-};
-
-const defaultOptions = {
-  disableAppHeaderButton: false,
-  disablePullRequestIssueButton: false,
-  linkFormats: defaultLinkFormats
-};
-
 function renderOptions({disableAppHeaderButton, disablePullRequestIssueButton, linkFormats}) {
   disableAppHeaderElement.checked = disableAppHeaderButton;
   disablePullRequestIssueElement.checked = disablePullRequestIssueButton;
   linkFormatsTextArea.value = convertLinkFormatsToText(linkFormats);
 }
 
-function loadOptionsFromStorage() {
-  chrome.storage.sync.get(defaultOptions, renderOptions);
+function saveOptionsToStorage() {
+  try {
+    const linkFormats = JSON.parse(linkFormatsTextArea.value);
+
+    chrome.storage.sync.set(
+      {
+        disableAppHeaderButton: !!disableAppHeaderElement.checked,
+        disablePullRequestIssueButton: !!disablePullRequestIssueElement.checked,
+        linkFormats
+      },
+      () => showStatus('Options saved', 1500)
+    );
+  }
+  catch (error) {
+    showStatus(error, 10000);
+    return;
+  }
 }
 
-document.addEventListener('DOMContentLoaded', loadOptionsFromStorage);
+function showStatus(message, duration) {
+  if (statusMessageTimeout) clearTimeout(statusMessageTimeout);
 
-saveButton.addEventListener('click', saveOptionsToStorage);
-
-resetButton.addEventListener('click', () => {
-  renderOptions(defaultOptions);
-  status.textContent = 'Defaults restored but not saved';
-  setTimeout(() => status.textContent = '', 1500);
-});
-
-const logoImage = document.getElementById('logo');
-logoImage.src = chrome.runtime.getURL('images/icon-32-enabled.png');
-
-const data = {
-  org: 'jeffhandley',
-  repo: 'copy-github-link',
-  number: '7',
-  title: 'pull request number 7',
-  url: 'https://github.com/jeffhandley/copy-github-link/pull/7#event123',
-  origin: 'https://github.com',
-  hostname: 'github.com',
-  pathname: 'jeffhandley/copy-github-link/pull/7',
-  hash: '#event123',
-  filepath: null
-};
+  statusMessage.textContent = message;
+  statusMessageTimeout = setTimeout(() => statusMessage.textContent = '', duration);
+}

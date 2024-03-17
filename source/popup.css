@@ -3,6 +3,7 @@ HTML {
   background-position: center;
   background-repeat: no-repeat;
   margin: 0;
+  padding: 0;
   width: max-content;
   max-width: 800px;
   min-height: 256px;
@@ -10,10 +11,14 @@ HTML {
 
 BODY {
   background-color: rgba(255, 255, 255, 0.9);
-  margin: 12px;
-  padding: 0;
+  margin: 0;
+  padding: 12px;
   color: #003650;
   min-height: 256px;
+}
+
+.options-container {
+  float: right;
 }
 
 H1 {

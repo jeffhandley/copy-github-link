@@ -1,14 +1,8 @@
-import defaultLinkFormats from './defaultLinkFormats.js';
+import defaultOptions from './defaultOptions.js';
 import isGitHub from './isGitHub.js';
 import getGitHubLinks from './getGitHubLinks.js';
 
-const defaultOptions = {
-  disableAppHeaderButton: false,
-  disablePullRequestIssueButton: false,
-  linkFormats: defaultLinkFormats
-};
-
-let currentOptions = defaultOptions;
+let currentOptions = {...defaultOptions};
 
 function loadOptionsFromStorage() {
     chrome.storage.sync.get(defaultOptions, loadedOptions => currentOptions = {
@@ -20,8 +14,14 @@ function loadOptionsFromStorage() {
 chrome.storage.onChanged.addListener(loadOptionsFromStorage);
 loadOptionsFromStorage();
 
+const optionsLink = document.getElementById('options-link');
 const linkTarget = document.getElementById('link-target');
-const linkList = document.getElementById('link-list');
+const links = document.getElementById('links');
+
+optionsLink.addEventListener('click', (event) => {
+    chrome.runtime.openOptionsPage();
+    event.preventDefault();
+});
 
 chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
     if (!isGitHub(tab)) return;
@@ -31,14 +31,36 @@ chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
     const linkTargetAnchor = document.createElement("A");
     linkTarget.innerText = url;
 
-    while (linkList.firstChild) linkList.removeChild(linkList.firstChild);
+    while (links.firstChild) links.removeChild(links.firstChild);
 
-    getGitHubLinks(currentOptions, {url, title}).forEach(({ text, separator }) => {
-        if (separator && linkList.lastChild) {
-            linkList.lastChild.className = 'copy-github-link-separator';
+    const linkFormats = getGitHubLinks(currentOptions, {url, title});
+    if (!linkFormats || !linkFormats.length) return;
+
+    let linkList;
+
+    const newGroup = () => {
+        if (linkList && linkList.lastChild) {
+            links.appendChild(linkList);
         }
 
-        if (text) {
+        linkList = document.createElement('ul');
+        linkList.className = 'copy-github-link-list';
+    }
+
+    newGroup();
+
+    linkFormats.forEach(({ text, group }) => {
+        if (group) {
+            newGroup();
+
+            if (text) {
+                const groupTitle = document.createElement('span');
+                groupTitle.className = 'copy-github-link-group';
+                groupTitle.innerText = text;
+                links.appendChild(groupTitle);
+            }
+        }
+        else if (text) {
             const anchor = document.createElement("A");
             anchor.innerText = text;
             anchor.href = url;
@@ -54,9 +76,11 @@ chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
                 event.preventDefault();
             };
 
-            const item = document.createElement("LI");
-            item.appendChild(anchor);
-            linkList.appendChild(item);
+            const listItem = document.createElement("LI");
+            listItem.appendChild(anchor);
+            linkList.appendChild(listItem);
         }
     });
+
+    links.appendChild(linkList);
 });

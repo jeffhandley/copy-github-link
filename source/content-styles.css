@@ -1,3 +1,6 @@
+H5 {
+    padding-bottom: 8px;
+}
 .copy-github-link-container div.dropdown-menu {
     top:6px;
     width: max-content;
@@ -19,8 +22,11 @@
   padding: 0;
   min-height: 256px;
 }
+.copy-github-link-group {
+    font-weight: bold;
+}
 UL.copy-github-link-list {
-    padding: 10px 0px 10px 20px;
+    padding: 2px 0px 10px 20px;
     list-style-type: none;
 }
 UL.copy-github-link-list LI {
@@ -28,9 +34,6 @@ UL.copy-github-link-list LI {
 }
 UL.copy-github-link-list ::marker {
     content: '📋 ';
-}
-UL.copy-github-link-list LI.copy-github-link-separator {
-    padding-bottom: 6px;
 }
 UL.copy-github-link-list LI A.copy-github-link-clicked {
     color: darkred;

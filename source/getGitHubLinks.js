@@ -1,5 +1,5 @@
 export default function getGitHubLinks({linkFormats}, { url, title }) {
-    function parseLinkFormats(linkFormats, { org, repo, number, title, url, origin, hostname, pathname, hash, filepath }) {
+    function parseLinkFormats(linkFormats, { org, repo, number, author, title, url, origin, hostname, pathname, hash, codepath, codebranch }) {
       return linkFormats.reduce((enabledItems, item) => {
         if (!Array.isArray(item)) {
           item = [item];
@@ -19,13 +19,15 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
             case '{org}': return (!!org);
             case '{repo}': return (!!repo);
             case '{number}': return (!!number);
+            case '{author}': return (!!author);
             case '{title}': return (!!title);
             case '{url}': return (!!url);
             case '{origin}': return (!!origin);
             case '{hostname}': return (!!hostname);
             case '{pathname}': return (!!pathname);
             case '{hash}': return (!!hash);
-            case '{filepath}': return (!!filepath);
+            case '{codepath}': return (!!codepath);
+            case '{codebranch}': return (!!codebranch);
             default: return true;
           }
         }, true);
@@ -39,21 +41,28 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
             case '{org}': return (!org);
             case '{repo}': return (!repo);
             case '{number}': return (!number);
+            case '{author}': return (!author);
             case '{title}': return (!title);
             case '{url}': return (!url);
             case '{origin}': return (!origin);
             case '{hostname}': return (!hostname);
             case '{pathname}': return (!pathname);
             case '{hash}': return (!hash);
-            case '{filepath}': return (!filepath);
+            case '{codepath}': return (!codepath);
+            case '{codebranch}': return (!codebranch);
             default: return false;
           }
         }, false);
 
         if (disabled) return enabledItems;
 
-        if (format.match(/\{separator\}/)) {
-          return [ ...enabledItems, { separator: true } ];
+        if (format.match(/\<group\>/)) {
+            return [
+                ...enabledItems, {
+                    group: true,
+                    text: format.replace('<group>', '')
+                }
+            ];
         }
 
         return [
@@ -63,13 +72,15 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
               .replace('{org}', org)
               .replace('{repo}', repo)
               .replace('{number}', number)
+              .replace('{author}', author)
               .replace('{title}', title)
               .replace('{url}', url)
               .replace('{origin}', origin)
               .replace('{hostname}', hostname)
               .replace('{pathname}', pathname)
               .replace('{hash}', hash)
-              .replace('{filepath}', filepath),
+              .replace('{codepath}', codepath)
+              .replace('{codebranch}', codebranch)
           }
         ];
       }, []);
@@ -80,8 +91,8 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
 
     const [org, repo, ...pathSegments ] = pathname.split('/');
 
-    let isPull = false, isIssue = false, isPullOrIssue = false, number = null;
-    let isFilepath = false, filepath = null;
+    let isPull = false, isIssue = false, isPullOrIssue = false, number = null, author = null;
+    let isCodePath = false, codepath = null, codebranch = null;;
 
     if (!!org && !!repo && pathSegments.length >= 2) {
         const [ appRoute, appPathRoot, ...appPathSegments ] = pathSegments;
@@ -91,6 +102,8 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
         isIssue = appRoute === 'issues' && !Number.isNaN(parsedNumber);
         isPullOrIssue = isPull || isIssue;
         number = isPullOrIssue ? parsedNumber : null;
+
+        isCodePath = (appRoute === 'blob' || appRoute === 'tree') && appPathRoot;
 
         if (isPullOrIssue) {
             // Strip the pull/issue number and repo information from the page title
@@ -107,23 +120,48 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
                 const titleWords = title.split(' ');
                 titleWords.reverse();
 
-                const [ /* author */, /* "by" */, ...remainingTitleWords ] = titleWords;
-                remainingTitleWords.reverse();
+                const [ authorPart, by, ...remainingTitleWords ] = titleWords;
 
-                title = remainingTitleWords.join(' ');
+                // If the words matched the expected pattern, set the values
+                if (authorPart && by === 'by') {
+                    remainingTitleWords.reverse();
+
+                    title = remainingTitleWords.join(' ');
+                    author = authorPart;
+                }
             }
         }
-        else {
-            isFilepath = (appRoute === 'blob' || appRoute === 'tree') && appPathRoot;
+        else if (isCodePath) {
+            codepath = (appPathSegments.length > 0) ? [appPathRoot, ...appPathSegments].join('/') : appPathRoot;
 
-            if (isFilepath && appPathSegments.length > 0) {
-                filepath = appPathSegments.join('/');
-            }
-            else if (isFilepath) {
-                filepath = appPathRoot;
+            // Strip the repo information from the page title
+            const titleParts = title.split(' · ');
+            titleParts.reverse();
+
+            const [ /* repo */, ...remainingTitleParts ] = titleParts;
+            remainingTitleParts.reverse;
+
+            title = remainingTitleParts.join(' · ');
+
+            // Extract and remove the branch/commit from the title
+            const titleWords = title.split(' ');
+            titleWords.reverse();
+
+            const [ branch, at, ...remainingTitleWords ] = titleWords;
+
+            // If the words matched the expected pattern, set the values
+            if (branch && at === 'at') {
+                remainingTitleWords.reverse();
+
+                codepath = remainingTitleWords.join(' ');
+                codebranch = branch;
+
+                if (codepath.indexOf(`${repo}/`) == 0) {
+                    codepath = codepath.substring(repo.length + 1);
+                }
             }
         }
     }
 
-    return parseLinkFormats(linkFormats, { org, repo, number, title, url, origin, hostname, pathname, hash, filepath });
+    return parseLinkFormats(linkFormats, { org, repo, number, author, title, url, origin, hostname, pathname, hash, codepath, codebranch });
 }

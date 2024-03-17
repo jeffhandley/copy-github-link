@@ -85,15 +85,31 @@ export default function addLinksToPage(options, links) {
                             linkPopupBodyContent.appendChild(linkPopupSubtitle);
 
                             if (links && links.length) {
-                                const linkList = document.createElement('ul');
-                                linkList.className = 'copy-github-link-list';
+                                let linkList;
 
-                                links.forEach(({text, separator}) => {
-                                    if (separator && linkList.lastChild) {
-                                        linkList.lastChild.className = 'copy-github-link-separator';
+                                const newGroup = () => {
+                                    if (linkList && linkList.lastChild) {
+                                        linkPopupBodyContent.appendChild(linkList);
                                     }
 
-                                    if (text) {
+                                    linkList = document.createElement('ul');
+                                    linkList.className = 'copy-github-link-list';
+                                }
+
+                                newGroup();
+
+                                links.forEach(({text, group}) => {
+                                    if (group) {
+                                        newGroup();
+
+                                        if (text) {
+                                            const groupTitle = document.createElement('span');
+                                            groupTitle.className = 'copy-github-link-group';
+                                            groupTitle.innerText = text;
+                                            linkPopupBodyContent.appendChild(groupTitle);
+                                        }
+                                    }
+                                    else if (text) {
                                         const listItem = document.createElement('li');
                                             const anchor = document.createElement('a');
                                             anchor.innerText = text;
@@ -151,8 +167,6 @@ export default function addLinksToPage(options, links) {
     }
 
     const appHeader = document.querySelector('.AppHeader-actions');
-
-    console.log('rendering...', options);
 
     if (appHeader) {
         renderLinkButton(appHeader, options.disableAppHeaderButton, 'copy-github-link-appheader', false, 'AppHeader-button');

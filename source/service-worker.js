@@ -1,15 +1,14 @@
 import addLinksToPage from './addLinksToPage.js';
-import defaultLinkFormats from './defaultLinkFormats.js';
+import defaultOptions from './defaultOptions.js';
 import getGitHubLinks from './getGitHubLinks.js';
 import isGitHub from './isGitHub.js';
 
-const defaultOptions = {
-  disableAppHeaderButton: false,
-  disablePullRequestIssueButton: false,
-  linkFormats: defaultLinkFormats
-};
+let currentOptions = {...defaultOptions};
 
-let currentOptions = defaultOptions;
+chrome.storage.onChanged.addListener(loadOptionsFromStorage);
+loadOptionsFromStorage();
+
+getCurrentTab().then(tab => setActionState(isGitHub(tab)));
 
 function loadOptionsFromStorage() {
     chrome.storage.sync.get(defaultOptions, loadedOptions => {
@@ -18,16 +17,10 @@ function loadOptionsFromStorage() {
             ...loadedOptions
         };
 
-        console.log('currentOptions', currentOptions);
-
+        // Refresh the current options into the active tab
         getCurrentTab().then(tabLoaded);
     });
 }
-
-chrome.storage.onChanged.addListener(loadOptionsFromStorage);
-loadOptionsFromStorage();
-
-getCurrentTab().then(tab => setActionState(isGitHub(tab)));
 
 async function getCurrentTab() {
     let [tab] = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
