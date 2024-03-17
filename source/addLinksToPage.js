@@ -1,4 +1,4 @@
-export default function addLinksToPage(links) {
+export default function addLinksToPage(options, links) {
     const url = location.href;
     const logoUrl = chrome.runtime.getURL('images/logo-256.png');
 
@@ -124,8 +124,17 @@ export default function addLinksToPage(links) {
         return linkDetails;
     }
 
-    function renderLinkButton(header, containerId, includeTextLabel, buttonClass) {
+    function renderLinkButton(header, optionDisabled, containerId, includeTextLabel, buttonClass) {
         const existing = document.getElementById(containerId);
+
+        if (optionDisabled) {
+            if (existing) {
+                header.removeChild(existing);
+            }
+
+            return;
+        }
+
         const linkButton = createLinkButton(includeTextLabel, buttonClass);
 
         const linkContainer = document.createElement('div');
@@ -142,13 +151,16 @@ export default function addLinksToPage(links) {
     }
 
     const appHeader = document.querySelector('.AppHeader-actions');
-    const [pullRequestOrIssueHeader] = [...document.getElementsByClassName('gh-header-actions')];
+
+    console.log('rendering...', options);
 
     if (appHeader) {
-        renderLinkButton(appHeader, 'copy-github-link-appheader', false, 'AppHeader-button');
+        renderLinkButton(appHeader, options.disableAppHeaderButton, 'copy-github-link-appheader', false, 'AppHeader-button');
     }
 
+    const [pullRequestOrIssueHeader] = [...document.getElementsByClassName('gh-header-actions')];
+
     if (pullRequestOrIssueHeader) {
-        renderLinkButton(pullRequestOrIssueHeader, 'copy-github-link-pullorissue', true);
+        renderLinkButton(pullRequestOrIssueHeader, options.disablePullRequestIssueButton, 'copy-github-link-pullorissue', true);
     }
 }

@@ -11,13 +11,13 @@
       <legend>Display Options</legend>
 
       <div>
-        <input type="checkbox" name="addAppHeaderButton" id="addAppHeaderButton" checked="checked" />
-        <label for="addAppHeaderButton">Add link button to header for all github.com pages</label>
+        <input type="checkbox" id="disable-app-header" />
+        <label for="disable-app-header">Disable link button in header on all github.com pages</label>
       </div>
 
       <div>
-        <input type="checkbox" name="addPullRequestIssueButton" id="addPullRequestIssueButton" checked="checked" />
-        <label for="addPullRequestIssueButton">Add link button to Pull Request and Issue pages</label>
+        <input type="checkbox" id="disable-pullrequest-issue" />
+        <label for="disable-pullrequest-issue">Disable link button on Pull Request and Issue pages</label>
     </fieldset>
 
     <fieldset style="width: 800px;">
@@ -51,10 +51,10 @@
       <textarea id="link-formats" cols="50" rows="30" wrap="off"></textarea>
     </fieldset>
 
-    <button id="save">Save</button>
-    <button type="button" id="resetButton">Reset Defaults</button>
+    <button type="button" id="save-button">Save</button>
+    <button type="button" id="reset-button">Reset Defaults</button>
 
-    <div id="status"></div>
+    <span id="status"></span>
 
     <script type="module" src="options.js"></script>
   </body>

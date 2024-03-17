@@ -1,4 +1,4 @@
-export default function getGitHubLinks(linkFormats, { url, title }) {
+export default function getGitHubLinks({linkFormats}, { url, title }) {
     function parseLinkFormats(linkFormats, { org, repo, number, title, url, origin, hostname, pathname, hash, filepath }) {
       return linkFormats.reduce((enabledItems, item) => {
         if (!Array.isArray(item)) {

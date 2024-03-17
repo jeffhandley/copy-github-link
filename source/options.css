@@ -5,6 +5,8 @@ H1 {
     margin-left: -40px;
 }
 H1 IMG#logo {
+    width: 32px;
+    height: 32px;
     vertical-align: text-bottom;
 }
 FIELDSET {
@@ -19,4 +21,7 @@ FIELDSET DIV {
 }
 FIELDSET TEXTAREA {
     width: calc(100% - 8px);
+}
+SPAN#status {
+    margin-left: 16px;
 }

@@ -1,37 +1,60 @@
 import defaultLinkFormats from './defaultLinkFormats.js';
 
+const disableAppHeaderElement = document.getElementById('disable-app-header');
+const disablePullRequestIssueElement = document.getElementById('disable-pullrequest-issue');
+const linkFormatsTextArea = document.getElementById('link-formats');
+
+const saveButton = document.getElementById('save-button');
+const resetButton = document.getElementById('reset-button');
+const status = document.getElementById('status');
+
+function convertLinkFormatsToText(linkFormats) {
+  return linkFormats.reduce((text, format, index) =>
+    `${text}${(index > 0 ? ',\n' : '')}  ${JSON.stringify(format)}`
+    , '[\n'
+  ) + '\n]\n';
+}
+
 // Saves options to chrome.storage
-const saveOptions = () => {
-  // const color = document.getElementById('color').value;
-  // const likesColor = document.getElementById('like').checked;
-
-  // chrome.storage.sync.set(
-  //   { favoriteColor: color, likesColor: likesColor },
-  //   () => {
-  //     // Update status to let user know options were saved.
-  //     const status = document.getElementById('status');
-  //     status.textContent = 'Options saved.';
-  //     setTimeout(() => {
-  //       status.textContent = '';
-  //     }, 750);
-  //   }
-  // );
+const saveOptionsToStorage = () => {
+  chrome.storage.sync.set(
+    {
+      disableAppHeaderButton: !!disableAppHeaderElement.checked,
+      disablePullRequestIssueButton: !!disablePullRequestIssueElement.checked,
+      linkFormats: JSON.parse(linkFormatsTextArea.value)
+    },
+    () => {
+      status.textContent = 'Options saved';
+      setTimeout(() => status.textContent = '', 750);
+    }
+  );
 };
 
-// Restores select box and checkbox state using the preferences
-// stored in chrome.storage.
-const restoreOptions = () => {
-  // chrome.storage.sync.get(
-  //   { favoriteColor: 'red', likesColor: true },
-  //   (items) => {
-  //     document.getElementById('color').value = items.favoriteColor;
-  //     document.getElementById('like').checked = items.likesColor;
-  //   }
-  // );
+const defaultOptions = {
+  disableAppHeaderButton: false,
+  disablePullRequestIssueButton: false,
+  linkFormats: defaultLinkFormats
 };
 
-// document.addEventListener('DOMContentLoaded', restoreOptions);
-// document.getElementById('save').addEventListener('click', saveOptions);
+function renderOptions({disableAppHeaderButton, disablePullRequestIssueButton, linkFormats}) {
+  disableAppHeaderElement.checked = disableAppHeaderButton;
+  disablePullRequestIssueElement.checked = disablePullRequestIssueButton;
+  linkFormatsTextArea.value = convertLinkFormatsToText(linkFormats);
+}
+
+function loadOptionsFromStorage() {
+  chrome.storage.sync.get(defaultOptions, renderOptions);
+}
+
+document.addEventListener('DOMContentLoaded', loadOptionsFromStorage);
+
+saveButton.addEventListener('click', saveOptionsToStorage);
+
+resetButton.addEventListener('click', () => {
+  renderOptions(defaultOptions);
+  status.textContent = 'Defaults restored but not saved';
+  setTimeout(() => status.textContent = '', 1500);
+});
 
 const logoImage = document.getElementById('logo');
 logoImage.src = chrome.runtime.getURL('images/icon-32-enabled.png');
@@ -48,14 +71,3 @@ const data = {
   hash: '#event123',
   filepath: null
 };
-
-const linkFormatsTextArea = document.getElementById('link-formats');
-
-const formatLines = defaultLinkFormats.reduce((text, format, index) =>
-  `${text}${(index > 0 ? ',\n' : '')}  ${JSON.stringify(format)}`
-, '[\n') + '\n]\n';
-
-linkFormatsTextArea.value = formatLines;
-
-const linkFormats = parseLinkFormats(JSON.parse(linkFormatsTextArea.value), data);
-console.log(linkFormats);

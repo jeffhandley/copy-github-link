@@ -3,6 +3,30 @@ import defaultLinkFormats from './defaultLinkFormats.js';
 import getGitHubLinks from './getGitHubLinks.js';
 import isGitHub from './isGitHub.js';
 
+const defaultOptions = {
+  disableAppHeaderButton: false,
+  disablePullRequestIssueButton: false,
+  linkFormats: defaultLinkFormats
+};
+
+let currentOptions = defaultOptions;
+
+function loadOptionsFromStorage() {
+    chrome.storage.sync.get(defaultOptions, loadedOptions => {
+        currentOptions = {
+            ...currentOptions,
+            ...loadedOptions
+        };
+
+        console.log('currentOptions', currentOptions);
+
+        getCurrentTab().then(tabLoaded);
+    });
+}
+
+chrome.storage.onChanged.addListener(loadOptionsFromStorage);
+loadOptionsFromStorage();
+
 getCurrentTab().then(tab => setActionState(isGitHub(tab)));
 
 async function getCurrentTab() {
@@ -34,12 +58,12 @@ async function tabLoaded(tab) {
         chrome.scripting.executeScript({
             target: { tabId: tab.id },
             func: getGitHubLinks,
-            args: [defaultLinkFormats, tab]
+            args: [currentOptions, tab]
         }).then(([{result: links}]) => {
             chrome.scripting.executeScript({
                 target: { tabId: tab.id },
                 func: addLinksToPage,
-                args: [links]
+                args: [currentOptions, links]
             });
         });
     }
@@ -55,7 +79,5 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 });
 
 chrome.tabs.onActivated.addListener((result) => {
-    chrome.tabs.get(result.tabId, tab => {
-        setActionState(isGitHub(tab));
-    });
+    chrome.tabs.get(result.tabId, tabLoaded);
 });

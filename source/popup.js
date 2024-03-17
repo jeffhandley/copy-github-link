@@ -2,6 +2,24 @@ import defaultLinkFormats from './defaultLinkFormats.js';
 import isGitHub from './isGitHub.js';
 import getGitHubLinks from './getGitHubLinks.js';
 
+const defaultOptions = {
+  disableAppHeaderButton: false,
+  disablePullRequestIssueButton: false,
+  linkFormats: defaultLinkFormats
+};
+
+let currentOptions = defaultOptions;
+
+function loadOptionsFromStorage() {
+    chrome.storage.sync.get(defaultOptions, loadedOptions => currentOptions = {
+        ...currentOptions,
+        ...loadedOptions
+    });
+}
+
+chrome.storage.onChanged.addListener(loadOptionsFromStorage);
+loadOptionsFromStorage();
+
 const linkTarget = document.getElementById('link-target');
 const linkList = document.getElementById('link-list');
 
@@ -15,7 +33,7 @@ chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
 
     while (linkList.firstChild) linkList.removeChild(linkList.firstChild);
 
-    getGitHubLinks(defaultLinkFormats, {url, title}).forEach(({ text, separator }) => {
+    getGitHubLinks(currentOptions, {url, title}).forEach(({ text, separator }) => {
         if (separator && linkList.lastChild) {
             linkList.lastChild.className = 'copy-github-link-separator';
         }
