@@ -28,7 +28,7 @@ chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
 
     const {id, url, title} = tab;
 
-    const linkTargetAnchor = document.createElement("A");
+    const linkTargetAnchor = document.createElement('a');
     linkTarget.innerText = url;
 
     while (links.firstChild) links.removeChild(links.firstChild);
@@ -70,13 +70,13 @@ chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
 
             const linkUrl = urlOverride || url;
 
-            const anchor = document.createElement("A");
+            const anchor = document.createElement('a');
             anchor.innerText = text;
             anchor.href = linkUrl;
             anchor.title = `Click to copy this link to the clipboard.\n\nText:\n${text}\n\nURL:\n${linkUrl}`;
 
             anchor.onclick = event => {
-                chrome.tabs.sendMessage(id, { type: "copyLink", url: linkUrl, text });
+                chrome.tabs.sendMessage(id, { type: 'copyLink', url: linkUrl, text });
 
                 anchor.className = 'copy-github-link-clicked';
                 window.setTimeout(() => anchor.className = null, 250);
@@ -85,7 +85,7 @@ chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
                 event.preventDefault();
             };
 
-            const listItem = document.createElement("LI");
+            const listItem = document.createElement('li');
             listItem.appendChild(anchor);
             linkList.appendChild(listItem);
         }
