@@ -36,7 +36,7 @@ chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
     const linkFormats = getGitHubLinks(currentOptions, {url, title});
     if (!linkFormats || !linkFormats.length) return;
 
-    let linkList;
+    let linkList, pendingGroupTitle;
 
     const newGroup = () => {
         if (linkList && linkList.lastChild) {
@@ -49,25 +49,34 @@ chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
 
     newGroup();
 
-    linkFormats.forEach(({ text, group }) => {
+    linkFormats.forEach(({ text, group, urlOverride }) => {
         if (group) {
             newGroup();
 
             if (text) {
-                const groupTitle = document.createElement('span');
-                groupTitle.className = 'copy-github-link-group';
-                groupTitle.innerText = text;
-                links.appendChild(groupTitle);
+                pendingGroupTitle = document.createElement('div');
+                pendingGroupTitle.className = 'copy-github-link-group';
+                pendingGroupTitle.innerText = text;
+            }
+            else {
+                pendingGroupTitle = null;
             }
         }
         else if (text) {
+            if (pendingGroupTitle) {
+                links.appendChild(pendingGroupTitle);
+                pendingGroupTitle = null;
+            }
+
+            const linkUrl = urlOverride || url;
+
             const anchor = document.createElement("A");
             anchor.innerText = text;
-            anchor.href = url;
-            anchor.title = `Click to copy this link to the clipboard.\n\nText:\n${text}\n\nURL:\n${url}`;
+            anchor.href = linkUrl;
+            anchor.title = `Click to copy this link to the clipboard.\n\nText:\n${text}\n\nURL:\n${linkUrl}`;
 
             anchor.onclick = event => {
-                chrome.tabs.sendMessage(id, { type: "copyLink", url, text });
+                chrome.tabs.sendMessage(id, { type: "copyLink", url: linkUrl, text });
 
                 anchor.className = 'copy-github-link-clicked';
                 window.setTimeout(() => anchor.className = null, 250);

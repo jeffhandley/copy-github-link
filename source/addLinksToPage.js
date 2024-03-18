@@ -98,25 +98,27 @@ export default function addLinksToPage(options, links) {
 
                                 newGroup();
 
-                                links.forEach(({text, group}) => {
+                                links.forEach(({text, group, urlOverride}) => {
                                     if (group) {
                                         newGroup();
 
                                         if (text) {
-                                            const groupTitle = document.createElement('span');
+                                            const groupTitle = document.createElement('div');
                                             groupTitle.className = 'copy-github-link-group';
                                             groupTitle.innerText = text;
                                             linkPopupBodyContent.appendChild(groupTitle);
                                         }
                                     }
                                     else if (text) {
+                                        const linkUrl = urlOverride || url;
+
                                         const listItem = document.createElement('li');
                                             const anchor = document.createElement('a');
                                             anchor.innerText = text;
-                                            anchor.href = url;
-                                            anchor.title = `Click to copy this link to the clipboard.\n\nText:\n${text}\n\nURL:\n${url}`;
+                                            anchor.href = linkUrl;
+                                            anchor.title = `Click to copy this link to the clipboard.\n\nText:\n${text}\n\nURL:\n${linkUrl}`;
                                             anchor.onclick = event => {
-                                                copyLinkToClipboard({ url, text });
+                                                copyLinkToClipboard({ url: linkUrl, text });
                                                 anchor.className = 'copy-github-link-clicked';
 
                                                 window.setTimeout(() => anchor.className = null, 250);
