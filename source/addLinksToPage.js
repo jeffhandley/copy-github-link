@@ -75,6 +75,7 @@ export default function addLinksToPage(options, links) {
                     linkPopupBody.setAttribute('style', `background-image: url('${logoUrl}');`);
 
                         const linkPopupBodyContent = document.createElement('div');
+                        linkPopupBodyContent.className = 'copy-github-link-body-content';
 
                             const linkPopupTitle = document.createElement('h4');
                             linkPopupTitle.innerText = 'Copy GitHub Link';
@@ -85,7 +86,7 @@ export default function addLinksToPage(options, links) {
                             linkPopupBodyContent.appendChild(linkPopupSubtitle);
 
                             if (links && links.length) {
-                                let linkList;
+                                let linkList, pendingGroupTitle;
 
                                 const newGroup = () => {
                                     if (linkList && linkList.lastChild) {
@@ -103,13 +104,20 @@ export default function addLinksToPage(options, links) {
                                         newGroup();
 
                                         if (text) {
-                                            const groupTitle = document.createElement('div');
-                                            groupTitle.className = 'copy-github-link-group';
-                                            groupTitle.innerText = text;
-                                            linkPopupBodyContent.appendChild(groupTitle);
+                                            pendingGroupTitle = document.createElement('div');
+                                            pendingGroupTitle.className = 'copy-github-link-group';
+                                            pendingGroupTitle.innerText = text;
+                                        }
+                                        else {
+                                            pendingGroupTitle = null;
                                         }
                                     }
                                     else if (text) {
+                                        if (pendingGroupTitle) {
+                                            linkPopupBodyContent.appendChild(pendingGroupTitle);
+                                            pendingGroupTitle = null;
+                                        }
+
                                         const linkUrl = urlOverride || url;
 
                                         const listItem = document.createElement('li');

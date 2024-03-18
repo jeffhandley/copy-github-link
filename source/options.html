@@ -43,12 +43,17 @@
             element representing a single link format. Link formats represented as
             strings are visible as long as all tokens included in the format have
             values. If any token does not have a current value, the link format will
-            not be visible. Links that are conditionally visible based on values
-            not included in the format string are represented as arrays where the
-            structure of the array is the following:
+            not be visible. By default, all links target the current page, regardless
+            of the link format text; a URL override setting is used to change the link
+            target for any element.
           </p>
           <p>
-            <code>[format, tokens-required-to-enable, tokens-that-disable]</code>
+            Links that use conditional visibility or a URL override are represented as
+            an array in the following structure. Specify <code>null</code> to skip over
+            any values unneeded for the element.
+          </p>
+          <p>
+            <code>[format, tokens-required-to-enable, tokens-that-disable, url-override]</code>
           </p>
           <p>
             The <code>tokens-required-to-enable</code> and <code>tokens-that-disable</code>
@@ -59,11 +64,16 @@
             the <code>tokens-that-disable</code> string that DO have a current value, that
             link format will not be visible.
           </p>
+          <p>
+            Duplicate links are detected, with the first occurrence being displayed and the
+            subsequent occurrence(s) being omitted. Empty elements are also omitted; those
+            can be useful for friendly formatting of the JSON array data, for sake of editing.
+          </p>
         </div>
 
         <div class="grid-columns grid-columns-50-50">
           <div class="grid-column">
-            <div>
+            <div class="token-group">
               <label class="token">Repository Tokens</label>
               <dl>
                 <div class="grid-columns">
@@ -77,7 +87,7 @@
               </dl>
             </div>
 
-            <div>
+            <div class="token-group">
               <label class="token">Pull Request or Issue Tokens</label>
               <dl>
                 <div class="grid-columns">
@@ -94,9 +104,7 @@
                 </div>
               </dl>
             </div>
-          </div>
 
-          <div class="grid-column">
             <div class="token-group">
               <label class="token">URL Tokens</label>
               <dl>
@@ -127,9 +135,7 @@
               </dl>
             </div>
           </div>
-        </div>
 
-        <div class="grid-columns grid-columns-50-50">
           <div class="grid-column">
             <div class="token-group">
               <label class="token">Tree / Blob File Path Elements</label>
@@ -149,27 +155,34 @@
                 </div>
               </dl>
             </div>
-          </div>
 
-          <div class="grid-column">
             <div class="token-group">
-              <label class="token">Groups</label>
+              <label class="token">Structure Elements</label>
 
-              Group tokens are used to create separate groups of links. These elements are not links.
+              Group tokens are used to create separate groups of links; these elements are not links. Comment tokens are useful for editing the JSON data.
 
               <dl>
                 <div class="grid-columns">
                   <dt><code>&lt;group&gt;</code></dt>
-                  <dd>Create a new link group, optionally with text after the token to show a group name.</dd>
+                  <dd>
+                    Create a new link group, optionally with text after the token to show a group name.
+                    <p>
+                      If the element contains text other than the <code>&lt;group&gt;</code> token, that text will be shown as a group name above the next set of links. Group elements can be configured with <code>tokens-required-to-enable</code> and/or <code>tokens-that-disable</code> for conditional visibility, but the links within the group do not automatically respect that same visibility. A group will only be displayed if there are links within it.
+                    </p>
+                  </dd>
                 </div>
               </dl>
 
-              <p>
-                If the element contains text other than the <code>&lt;group&gt;</code> token, that text will be shown as a group name above the next set of links. Group elements can be configured with <code>tokens-required-to-enable</code> and/or <code>tokens-that-disable</code> for conditional visibility.
-              </p>
+              <dl>
+                <div class="grid-columns">
+                  <dt><code>&lt;comment&gt;</code></dt>
+                  <dd>Used for keeping comments in the JSON array without rendering an element.</dd>
+                </div>
+              </dl>
             </div>
           </div>
         </div>
+
         <textarea id="link-formats" cols="50" rows="35" wrap="off"></textarea>
       </fieldset>
     </div>

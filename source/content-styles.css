@@ -16,7 +16,7 @@ H5 {
   margin: 0;
   padding: 0;
 }
-.copy-github-link-body div {
+.copy-github-link-body .copy-github-link-body-content {
   background-color: rgba(255, 255, 255, 0.9);
   padding: 8px 12px;
   min-height: 256px;

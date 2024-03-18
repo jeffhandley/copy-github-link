@@ -1,6 +1,9 @@
 export default function getGitHubLinks({linkFormats}, { url, title }) {
     function parseLinkFormats(linkFormats, { org, repo, number, author, title, url, origin, hostname, pathname, hash, codepath, codebranch }) {
         return linkFormats.reduce((enabledItems, item) => {
+            // Skip over blank entries used for pretty formatting
+            if (!item) return enabledItems;
+
             if (!Array.isArray(item)) {
                 item = [item];
             }
@@ -57,13 +60,17 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
             if (disabled) return enabledItems;
 
             if (format && format.match && format.match(/\<group\>/)) {
-                    return [
-                            ...enabledItems, {
-                                    group: true,
-                                    text: format.replace('<group>', ''),
-                                    urlOverride
-                            }
-                    ];
+                return [
+                        ...enabledItems, {
+                                group: true,
+                                text: format.replace('<group>', ''),
+                                urlOverride
+                        }
+                ];
+            }
+
+            if (format && format.match && format.match(/\<comment\>/)) {
+                return enabledItems;
             }
 
             const replaceTokens = template => template && template
