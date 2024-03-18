@@ -1,72 +1,89 @@
-HTML {
+html {
     background-image: url('images/logo-1024.png');
     background-position: 50% 125px;
     background-repeat: no-repeat;
     margin: 0;
 }
-BODY {
+
+body {
     background-color: rgba(255, 255, 255, 0.9);
     margin: 0;
     padding-left: 64px;
 }
-H1 {
+
+h1 {
     margin-left: -40px;
 }
-H1 IMG#logo {
+
+h1 img#logo {
     width: 32px;
     height: 32px;
     vertical-align: text-bottom;
 }
-SPAN#status-message {
+
+span#status-message {
     margin-left: 16px;
 }
-FIELDSET {
+
+fieldset {
     margin-top: 16px;
 }
-FIELDSET LEGEND {
+
+fieldset legend {
     font-weight: bold;
 }
-FIELDSET DIV {
+
+fieldset div {
     margin: 8px 0;
 }
-FIELDSET TEXTAREA {
+
+fieldset textarea {
     width: calc(100% - 8px);
 }
-FIELDSET LABEL.token {
+
+fieldset label.token {
     font-weight: bold;
 }
+
 .grid-columns {
     display: flex;
     flex-direction: row;
     margin: 0;
     padding: 0;
 }
+
 .grid-column {
     margin: 0;
     padding: 0;
 }
+
 .grid-columns-50-50 .grid-column {
     width: 50%;
     margin-right: 12px;
 }
-FIELDSET DIV.token-group LABEL {
+
+fieldset div.token-group label {
     display: block;
 }
-FIELDSET DL {
+
+fieldset dl {
     margin: 4px 8px 12px 8px;
     padding: 0;
 }
-FIELDSET DL .grid-columns DT {
+
+fieldset dl .grid-columns dt {
     width: 20%;
     display: inline;
     font-weight: bold;
 }
-FIELDSET DL .grid-columns DD {
+
+fieldset dl .grid-columns dd {
     width: 80%;
     display: inline;
     margin-inline-start: 0;
     margin-bottom: 3px;
 }
-FIELDSET DL DD .example {
+
+fieldset dl dd .example {
     margin: 0;
 }

@@ -1,40 +1,40 @@
 {
-  "manifest_version": 3,
-  "name": "Copy GitHub Link",
-  "description": "Copy formatted GitHub links for issues, pull requests, and more.",
-  "version": "1.2.0",
-  "icons": {
-    "32": "images/icon-32-enabled.png",
-    "64": "images/icon-64-enabled.png",
-    "128": "images/icon-128-enabled.png"
-  },
-  "action": {
-    "default_popup": "popup.html"
-  },
-  "background": {
-    "service_worker": "service-worker.js",
-    "type": "module"
-  },
-  "content_scripts": [
-    {
-      "matches": [ "https://github.com/*" ],
-      "js": [ "content-script.js" ],
-      "css": [ "content-styles.css" ]
-    }
-  ],
-  "options_page": "options.html",
-  "web_accessible_resources": [
-    {
-      "resources": [ "images/icon-32-enabled.png", "images/logo-256.png", "images/logo-1024.png"],
-      "matches": [ "https://github.com/*" ]
-    }
-  ],
-  "host_permissions": [
-    "https://github.com/*"
-  ],
-  "permissions": [
-    "clipboardWrite",
-    "scripting",
-    "storage"
-  ]
+    "manifest_version": 3,
+    "name": "Copy GitHub Link",
+    "description": "Copy formatted GitHub links for issues, pull requests, repositories, users, and more.",
+    "version": "1.2.0",
+    "icons": {
+        "32": "images/icon-32-enabled.png",
+        "64": "images/icon-64-enabled.png",
+        "128": "images/icon-128-enabled.png"
+    },
+    "action": {
+        "default_popup": "popup.html"
+    },
+    "background": {
+        "service_worker": "service-worker.js",
+        "type": "module"
+    },
+    "content_scripts": [
+        {
+            "matches": [ "https://github.com/*" ],
+            "js": [ "content-script.js" ],
+            "css": [ "content-styles.css" ]
+        }
+    ],
+    "options_page": "options.html",
+    "web_accessible_resources": [
+        {
+            "resources": [ "images/icon-32-enabled.png", "images/logo-256.png", "images/logo-1024.png"],
+            "matches": [ "https://github.com/*" ]
+        }
+    ],
+    "host_permissions": [
+        "https://github.com/*"
+    ],
+    "permissions": [
+        "clipboardWrite",
+        "scripting",
+        "storage"
+    ]
 }

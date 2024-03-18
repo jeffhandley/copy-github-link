@@ -17,45 +17,45 @@ chrome.storage.sync.get(defaultOptions, renderOptions);
 saveButton.addEventListener('click', saveOptionsToStorage);
 
 resetButton.addEventListener('click', () => {
-  renderOptions(defaultOptions);
-  showStatus('Options restored to defaults, but not saved', 2500);
+    renderOptions(defaultOptions);
+    showStatus('Options restored to defaults, but not saved', 2500);
 });
 
 function convertLinkFormatsToText(linkFormats) {
-  return linkFormats.reduce((text, format, index) =>
-    `${text}${(index > 0 ? ',\n' : '')}  ${JSON.stringify(format)}`
-    , '[\n'
-  ) + '\n]\n';
+    return linkFormats.reduce((text, format, index) =>
+        `${text}${(index > 0 ? ',\n' : '')}  ${JSON.stringify(format)}`
+        , '[\n'
+    ) + '\n]\n';
 }
 
 function renderOptions({disableAppHeaderButton, disablePullRequestIssueButton, linkFormats}) {
-  disableAppHeaderElement.checked = disableAppHeaderButton;
-  disablePullRequestIssueElement.checked = disablePullRequestIssueButton;
-  linkFormatsTextArea.value = convertLinkFormatsToText(linkFormats);
+    disableAppHeaderElement.checked = disableAppHeaderButton;
+    disablePullRequestIssueElement.checked = disablePullRequestIssueButton;
+    linkFormatsTextArea.value = convertLinkFormatsToText(linkFormats);
 }
 
 function saveOptionsToStorage() {
-  try {
-    const linkFormats = JSON.parse(linkFormatsTextArea.value);
+    try {
+        const linkFormats = JSON.parse(linkFormatsTextArea.value);
 
-    chrome.storage.sync.set(
-      {
-        disableAppHeaderButton: !!disableAppHeaderElement.checked,
-        disablePullRequestIssueButton: !!disablePullRequestIssueElement.checked,
-        linkFormats
-      },
-      () => showStatus('Options saved', 1500)
-    );
-  }
-  catch (error) {
-    showStatus(error, 10000);
-    return;
-  }
+        chrome.storage.sync.set(
+            {
+                disableAppHeaderButton: !!disableAppHeaderElement.checked,
+                disablePullRequestIssueButton: !!disablePullRequestIssueElement.checked,
+                linkFormats
+            },
+            () => showStatus('Options saved', 1500)
+        );
+    }
+    catch (error) {
+        showStatus(error, 10000);
+        return;
+    }
 }
 
 function showStatus(message, duration) {
-  if (statusMessageTimeout) clearTimeout(statusMessageTimeout);
+    if (statusMessageTimeout) clearTimeout(statusMessageTimeout);
 
-  statusMessage.textContent = message;
-  statusMessageTimeout = setTimeout(() => statusMessage.textContent = '', duration);
+    statusMessage.textContent = message;
+    statusMessageTimeout = setTimeout(() => statusMessage.textContent = '', duration);
 }

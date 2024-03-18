@@ -1,4 +1,4 @@
-HTML {
+html {
   background-image: url('images/logo-256.png');
   background-position: center;
   background-repeat: no-repeat;
@@ -9,7 +9,7 @@ HTML {
   min-height: 256px;
 }
 
-BODY {
+body {
   background-color: rgba(255, 255, 255, 0.9);
   margin: 0;
   padding: 12px;
@@ -21,28 +21,28 @@ BODY {
   float: right;
 }
 
-H1 {
+h1 {
   margin-bottom: 4px;
   font-size: 1.4em;
 }
 
-H2 {
+h2 {
   margin-top: 0;
   margin-bottom: 8px;
   font-size: 1.1em;
   font-weight: normal;
 }
 
-UL.copy-github-link-list {
+ul.copy-github-link-list {
   margin: 0;
 }
 
-UL.copy-github-link-list LI A, UL.copy-github-link-list LI A:active, UL.copy-github-link-list LI A:visited {
+ul.copy-github-link-list li a, ul.copy-github-link-list li a:active, ul.copy-github-link-list li a:visited {
   color: #0969DA;
   text-decoration: none;
   font-size: larger;
 }
 
-UL.copy-github-link-list LI A:hover {
+ul.copy-github-link-list li a:hover {
   text-decoration: underline;
 }

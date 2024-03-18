@@ -1,192 +1,193 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Copy GitHub Link</title>
-    <link rel="stylesheet" href="options.css" />
-  </head>
-  <body>
-    <h1><img id="logo" /> Copy GitHub Link</h1>
+<html lang="en">
+    <head>
+        <title>Copy GitHub Link</title>
+        <link rel="stylesheet" href="options.css" />
+    </head>
+    <body>
+        <h1><img id="logo" /> Copy GitHub Link</h1>
 
-    <p>
-      These options are persisted to the browser's extension storage, synchronized
-      across your devices if your browser is configured to sync extensions.
-    </p>
-
-    <div>
-      <button type="button" id="save-button">Save</button>
-      <button type="button" id="reset-button">Reset to Defaults</button>
-      <span id="status-message"></span>
-    </div>
-
-    <div>
-      <fieldset>
-        <legend>Display Options</legend>
-
-        The extension can add buttons to two places on GitHub.com: the site-wide app header and the Pull Request / Issue page header. These options allow disabling either or both on-page buttons. Regardless of these settings, the extension's toolbar icon will always open a popup with the links for the current page.
+        <p>
+            These options are persisted to the browser's extension storage, synchronized
+            across your devices if your browser is configured to sync extensions.
+        </p>
 
         <div>
-          <input type="checkbox" id="disable-app-header" />
-          <label for="disable-app-header"><strong>Disable button in app header on all github.com pages.</strong> This button is displayed at the top of the page, to the left of the profile buttons.</label>
+            <button type="button" id="save-button">Save</button>
+            <button type="button" id="reset-button">Reset to Defaults</button>
+            <span id="status-message"></span>
         </div>
 
         <div>
-          <input type="checkbox" id="disable-pullrequest-issue" />
-          <label for="disable-pullrequest-issue"><strong>Disable button on Pull Request and Issue pages.</strong> This button is displayed to the right of the Pull Request or Issue title, before other buttons in the page header.</label>
-      </fieldset>
+            <fieldset>
+                <legend>Display Options</legend>
 
-      <fieldset>
-        <legend>Link Formats</legend>
+                The extension can add buttons to two places on GitHub.com: the site-wide app header and the Pull Request / Issue page header. These options allow disabling either or both on-page buttons. Regardless of these settings, the extension's toolbar icon will always open a popup with the links for the current page.
 
-        <div>
-          <p>
-            The configured link formats are represented as a JSON array, with each
-            element representing a single link format. Link formats represented as
-            strings are visible as long as all tokens included in the format have
-            values. If any token does not have a current value, the link format will
-            not be visible. By default, all links target the current page, regardless
-            of the link format text; a URL override setting is used to change the link
-            target for any element.
-          </p>
-          <p>
-            Links that use conditional visibility or a URL override are represented as
-            an array in the following structure. Specify <code>null</code> to skip over
-            any values unneeded for the element.
-          </p>
-          <p>
-            <code>[format, tokens-required-to-enable, tokens-that-disable, url-override]</code>
-          </p>
-          <p>
-            The <code>tokens-required-to-enable</code> and <code>tokens-that-disable</code>
-            values are strings containing tokens that will be resolved the same way as
-            the tokens in the format string. If there are any tokens in the
-            <code>tokens-required-to-enable</code> string that DO NOT have a current value,
-            that link format will not be visible. Conversely, if there are any tokens in
-            the <code>tokens-that-disable</code> string that DO have a current value, that
-            link format will not be visible.
-          </p>
-          <p>
-            Duplicate links are detected, with the first occurrence being displayed and the
-            subsequent occurrence(s) being omitted. Empty elements are also omitted; those
-            can be useful for friendly formatting of the JSON array data, for sake of editing.
-          </p>
-        </div>
-
-        <div class="grid-columns grid-columns-50-50">
-          <div class="grid-column">
-            <div class="token-group">
-              <label class="token">Repository Tokens</label>
-              <dl>
-                <div class="grid-columns">
-                  <dt><code>{org}</code></dt>
-                  <dd>Organization or user.<div class="example">Example: <code>jeffhandley</code></div></dd>
-                </div>
-                <div class="grid-columns">
-                  <dt><code>{repo}</code></dt>
-                  <dd>Repository.<div class="example">Example: <code>copy-github-link</code></div></dd>
-                </div>
-              </dl>
-            </div>
-
-            <div class="token-group">
-              <label class="token">Pull Request or Issue Tokens</label>
-              <dl>
-                <div class="grid-columns">
-                  <dt><code>{number}</code></dt>
-                  <dd>Pull Request or Issue number, as an integer.<div class="example">Example: <code>12345</code></div></dd>
-                </div>
-                <div class="grid-columns">
-                  <dt><code>{author}</code></dt>
-                  <dd>Pull Request author. Does not apply to Issues.<div class="example">Example: <code>jeffhandley</code></div></dd>
-                </div>
-                <div class="grid-columns">
-                  <dt><code>{title}</code></dt>
-                  <dd>Pull Request or Issue title, with GitHub's title suffix removed.</dd>
-                </div>
-              </dl>
-            </div>
-
-            <div class="token-group">
-              <label class="token">URL Tokens</label>
-              <dl>
-                <div class="grid-columns">
-                  <dt><code>{url}</code></dt>
-                  <dd>The entire URL, which corresponds to <code>{origin}{pathname}{hash}</code>.<div class="example">Always begins with: <code>https://github.com</code></div></dd>
+                <div>
+                    <input type="checkbox" id="disable-app-header" />
+                    <label for="disable-app-header"><strong>Disable button in app header on all github.com pages.</strong> This button is displayed at the top of the page, to the left of the profile buttons.</label>
                 </div>
 
-                <div class="grid-columns">
-                  <dt><code>{origin}</code></dt>
-                  <dd>The scheme and host name for the URL.<div class="example">Always: <code>https://github.com</code></div></dd>
+                <div>
+                    <input type="checkbox" id="disable-pullrequest-issue" />
+                    <label for="disable-pullrequest-issue"><strong>Disable button on Pull Request and Issue pages.</strong> This button is displayed to the right of the Pull Request or Issue title, before other buttons in the page header.</label>
                 </div>
+            </fieldset>
 
-                <div class="grid-columns">
-                  <dt><code>{hostname}</code></dt>
-                  <dd>The host name for the URL, excluding the scheme (<code>https://</code>).<div class="example">Always: <code>github.com</code></div></dd>
-                </div>
+            <fieldset>
+                <legend>Link Formats</legend>
 
-                <div class="grid-columns">
-                  <dt><code>{pathname}</code></dt>
-                  <dd>The path name for the URL, excluding the leading <code>/</code>.<div class="example">Example: <code>jeffhandley/copy-github-link/pull/7</code></div></dd>
-                </div>
-
-                <div class="grid-columns">
-                  <dt><code>{hash}</code></dt>
-                  <dd>The hash for the URL if present, including the leading <code>#</code>.<div class="example">Example: <code>#issue-2190251842</code></div></dd>
-                </div>
-              </dl>
-            </div>
-          </div>
-
-          <div class="grid-column">
-            <div class="token-group">
-              <label class="token">Tree / Blob File Path Elements</label>
-
-              These tokens only have values when the page is within a <strong>blob</strong>
-              or <strong>tree</strong> path, showing a code file or folder.
-
-              <dl>
-                <div class="grid-columns">
-                  <dt><code>{codepath}</code></dt>
-                  <dd>Path to the file or folder within the repository's code.<div class="example">Example: <code>source/options.html</code></div></dd>
-                </div>
-
-                <div class="grid-columns">
-                  <dt><code>{codebranch}</code></dt>
-                  <dd>Branch or commit used to view the current code file or folder.<div class="example">Example: <code>main</code></div></dd>
-                </div>
-              </dl>
-            </div>
-
-            <div class="token-group">
-              <label class="token">Structure Elements</label>
-
-              Group tokens are used to create separate groups of links; these elements are not links. Comment tokens are useful for editing the JSON data.
-
-              <dl>
-                <div class="grid-columns">
-                  <dt><code>&lt;group&gt;</code></dt>
-                  <dd>
-                    Create a new link group, optionally with text after the token to show a group name.
+                <div>
                     <p>
-                      If the element contains text other than the <code>&lt;group&gt;</code> token, that text will be shown as a group name above the next set of links. Group elements can be configured with <code>tokens-required-to-enable</code> and/or <code>tokens-that-disable</code> for conditional visibility, but the links within the group do not automatically respect that same visibility. A group will only be displayed if there are links within it.
+                        The configured link formats are represented as a JSON array, with each
+                        element representing a single link format. Link formats represented as
+                        strings are visible as long as all tokens included in the format have
+                        values. If any token does not have a current value, the link format will
+                        not be visible. By default, all links target the current page, regardless
+                        of the link format text; a URL override setting is used to change the link
+                        target for any element.
                     </p>
-                  </dd>
+                    <p>
+                        Links that use conditional visibility or a URL override are represented as
+                        an array in the following structure. Specify <code>null</code> to skip over
+                        any values unneeded for the element.
+                    </p>
+                    <p>
+                        <code>[format, tokens-required-to-enable, tokens-that-disable, url-override]</code>
+                    </p>
+                    <p>
+                        The <code>tokens-required-to-enable</code> and <code>tokens-that-disable</code>
+                        values are strings containing tokens that will be resolved the same way as
+                        the tokens in the format string. If there are any tokens in the
+                        <code>tokens-required-to-enable</code> string that DO NOT have a current value,
+                        that link format will not be visible. Conversely, if there are any tokens in
+                        the <code>tokens-that-disable</code> string that DO have a current value, that
+                        link format will not be visible.
+                    </p>
+                    <p>
+                        Duplicate links are detected, with the first occurrence being displayed and the
+                        subsequent occurrence(s) being omitted. Empty elements are also omitted; those
+                        can be useful for friendly formatting of the JSON array data, for sake of editing.
+                    </p>
                 </div>
-              </dl>
 
-              <dl>
-                <div class="grid-columns">
-                  <dt><code>&lt;comment&gt;</code></dt>
-                  <dd>Used for keeping comments in the JSON array without rendering an element.</dd>
+                <div class="grid-columns grid-columns-50-50">
+                    <div class="grid-column">
+                        <div class="token-group">
+                            <label class="token">Repository Tokens</label>
+                            <dl>
+                                <div class="grid-columns">
+                                    <dt><code>{org}</code></dt>
+                                    <dd>Organization or user.<div class="example">Example: <code>jeffhandley</code></div></dd>
+                                </div>
+                                <div class="grid-columns">
+                                    <dt><code>{repo}</code></dt>
+                                    <dd>Repository.<div class="example">Example: <code>copy-github-link</code></div></dd>
+                                </div>
+                            </dl>
+                        </div>
+
+                        <div class="token-group">
+                            <label class="token">Pull Request or Issue Tokens</label>
+                            <dl>
+                                <div class="grid-columns">
+                                    <dt><code>{number}</code></dt>
+                                    <dd>Pull Request or Issue number, as an integer.<div class="example">Example: <code>12345</code></div></dd>
+                                </div>
+                                <div class="grid-columns">
+                                    <dt><code>{author}</code></dt>
+                                    <dd>Pull Request author. Does not apply to Issues.<div class="example">Example: <code>jeffhandley</code></div></dd>
+                                </div>
+                                <div class="grid-columns">
+                                    <dt><code>{title}</code></dt>
+                                    <dd>Pull Request or Issue title, with GitHub's title suffix removed.</dd>
+                                </div>
+                            </dl>
+                        </div>
+
+                        <div class="token-group">
+                            <label class="token">URL Tokens</label>
+                            <dl>
+                                <div class="grid-columns">
+                                    <dt><code>{url}</code></dt>
+                                    <dd>The entire URL, which corresponds to <code>{origin}{pathname}{hash}</code>.<div class="example">Always begins with: <code>https://github.com</code></div></dd>
+                                </div>
+
+                                <div class="grid-columns">
+                                    <dt><code>{origin}</code></dt>
+                                    <dd>The scheme and host name for the URL.<div class="example">Always: <code>https://github.com</code></div></dd>
+                                </div>
+
+                                <div class="grid-columns">
+                                    <dt><code>{hostname}</code></dt>
+                                    <dd>The host name for the URL, excluding the scheme (<code>https://</code>).<div class="example">Always: <code>github.com</code></div></dd>
+                                </div>
+
+                                <div class="grid-columns">
+                                    <dt><code>{pathname}</code></dt>
+                                    <dd>The path name for the URL, excluding the leading <code>/</code>.<div class="example">Example: <code>jeffhandley/copy-github-link/pull/7</code></div></dd>
+                                </div>
+
+                                <div class="grid-columns">
+                                    <dt><code>{hash}</code></dt>
+                                    <dd>The hash for the URL if present, including the leading <code>#</code>.<div class="example">Example: <code>#issue-2190251842</code></div></dd>
+                                </div>
+                            </dl>
+                        </div>
+                    </div>
+
+                    <div class="grid-column">
+                        <div class="token-group">
+                            <label class="token">Tree / Blob File Path Elements</label>
+
+                            These tokens only have values when the page is within a <strong>blob</strong>
+                            or <strong>tree</strong> path, showing a code file or folder.
+
+                            <dl>
+                                <div class="grid-columns">
+                                    <dt><code>{codepath}</code></dt>
+                                    <dd>Path to the file or folder within the repository's code.<div class="example">Example: <code>source/options.html</code></div></dd>
+                                </div>
+
+                                <div class="grid-columns">
+                                    <dt><code>{codebranch}</code></dt>
+                                    <dd>Branch or commit used to view the current code file or folder.<div class="example">Example: <code>main</code></div></dd>
+                                </div>
+                            </dl>
+                        </div>
+
+                        <div class="token-group">
+                            <label class="token">Structure Elements</label>
+
+                            Group tokens are used to create separate groups of links; these elements are not links. Comment tokens are useful for editing the JSON data.
+
+                            <dl>
+                                <div class="grid-columns">
+                                    <dt><code>&lt;group&gt;</code></dt>
+                                    <dd>
+                                        Create a new link group, optionally with text after the token to show a group name.
+                                        <p>
+                                            If the element contains text other than the <code>&lt;group&gt;</code> token, that text will be shown as a group name above the next set of links. Group elements can be configured with <code>tokens-required-to-enable</code> and/or <code>tokens-that-disable</code> for conditional visibility, but the links within the group do not automatically respect that same visibility. A group will only be displayed if there are links within it.
+                                        </p>
+                                    </dd>
+                                </div>
+                            </dl>
+
+                            <dl>
+                                <div class="grid-columns">
+                                    <dt><code>&lt;comment&gt;</code></dt>
+                                    <dd>Used for keeping comments in the JSON array without rendering an element.</dd>
+                                </div>
+                            </dl>
+                        </div>
+                    </div>
                 </div>
-              </dl>
-            </div>
-          </div>
+
+                <textarea id="link-formats" cols="50" rows="35" wrap="off"></textarea>
+            </fieldset>
         </div>
 
-        <textarea id="link-formats" cols="50" rows="35" wrap="off"></textarea>
-      </fieldset>
-    </div>
-
-    <script type="module" src="options.js"></script>
-  </body>
+        <script type="module" src="options.js"></script>
+    </body>
 </html>
