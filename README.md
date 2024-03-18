@@ -4,6 +4,14 @@ Copy formatted GitHub links for issues, pull requests, repositories, users, and 
 
 Generates formatted GitHub links that can be copied to the clipboard from any github.com page. Using either the extension icon in the toolbar or one of the link dropdown buttons added to the github.com UI, a popup is shown with a list of convenient formats for the current page. Clicking any of the links will copy a link in that format to your clipboard. Links are copied in both plain text format (just the text, without the URL) and as a hyperlink to the current page's full URL for compatibility pasting into any application.
 
+## Installation
+
+This extension is published to the Chrome Web Store, which can be used for both Chrome and Edge.
+
+* [Copy GitHub Link version 1.2.0](https://chromewebstore.google.com/detail/copy-github-link/dnfnnlockpehnpkfdbejdogbfkjfeaan)
+
+The extension can also be installed locally by cloning this repository, turning on on Developer Mode in your browser's extension settings, and choosing to 'Load Unpacked' from the `source` folder.
+
 ## Fully Configurable with Useful Defaults
 
 The link formats available are dynamic based on the context of the page, and they are also fully configurable. Links can be conditionally visible based on what data elements are available, even if those data elements are not used in the link text. Links can be organized into groups and both the text and URL of links can be customized from the extension options page.
