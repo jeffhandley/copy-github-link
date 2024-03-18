@@ -66,7 +66,7 @@ async function tabLoaded(tab) {
 }
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    if (changeInfo.status === 'complete') {
+    if ((changeInfo.status === 'complete' && changeInfo.url) || changeInfo.title) {
         tabLoaded(tab);
     }
 });
