@@ -1,8 +1,26 @@
-import isGitHub from './isGitHub.js';
-import getGitHubLinks from './getGitHubLinks.js';
 import addLinksToPage from './addLinksToPage.js';
+import defaultOptions from './defaultOptions.js';
+import getGitHubLinks from './getGitHubLinks.js';
+import isGitHub from './isGitHub.js';
+
+let currentOptions = {...defaultOptions};
+
+chrome.storage.onChanged.addListener(loadOptionsFromStorage);
+loadOptionsFromStorage();
 
 getCurrentTab().then(tab => setActionState(isGitHub(tab)));
+
+function loadOptionsFromStorage() {
+    chrome.storage.sync.get(defaultOptions, loadedOptions => {
+        currentOptions = {
+            ...currentOptions,
+            ...loadedOptions
+        };
+
+        // Refresh the current options into the active tab
+        getCurrentTab().then(tabLoaded);
+    });
+}
 
 async function getCurrentTab() {
     let [tab] = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
@@ -33,12 +51,12 @@ async function tabLoaded(tab) {
         chrome.scripting.executeScript({
             target: { tabId: tab.id },
             func: getGitHubLinks,
-            args: [tab.url, tab.title]
+            args: [currentOptions, tab]
         }).then(([{result: links}]) => {
             chrome.scripting.executeScript({
                 target: { tabId: tab.id },
                 func: addLinksToPage,
-                args: [links]
+                args: [currentOptions, links]
             });
         });
     }
@@ -48,13 +66,11 @@ async function tabLoaded(tab) {
 }
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    if (changeInfo.status === 'complete') {
+    if (changeInfo.status === 'complete' || changeInfo.url || changeInfo.title) {
         tabLoaded(tab);
     }
 });
 
 chrome.tabs.onActivated.addListener((result) => {
-    chrome.tabs.get(result.tabId, tab => {
-        setActionState(isGitHub(tab));
-    });
+    chrome.tabs.get(result.tabId, tabLoaded);
 });

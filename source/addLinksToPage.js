@@ -1,4 +1,4 @@
-export default function addLinksToPage(links) {
+export default function addLinksToPage(options, links) {
     const url = location.href;
     const logoUrl = chrome.runtime.getURL('images/logo-256.png');
 
@@ -75,6 +75,7 @@ export default function addLinksToPage(links) {
                     linkPopupBody.setAttribute('style', `background-image: url('${logoUrl}');`);
 
                         const linkPopupBodyContent = document.createElement('div');
+                        linkPopupBodyContent.className = 'copy-github-link-body-content';
 
                             const linkPopupTitle = document.createElement('h4');
                             linkPopupTitle.innerText = 'Copy GitHub Link';
@@ -85,22 +86,47 @@ export default function addLinksToPage(links) {
                             linkPopupBodyContent.appendChild(linkPopupSubtitle);
 
                             if (links && links.length) {
-                                const linkList = document.createElement('ul');
-                                linkList.className = 'copy-github-link-list';
+                                let linkList, pendingGroupTitle;
 
-                                links.filter(l => !l.disabled).forEach(({text, separator}) => {
-                                    if (separator && linkList.lastChild) {
-                                        linkList.lastChild.className = 'copy-github-link-separator';
+                                const newGroup = () => {
+                                    if (linkList && linkList.lastChild) {
+                                        linkPopupBodyContent.appendChild(linkList);
                                     }
 
-                                    if (text) {
+                                    linkList = document.createElement('ul');
+                                    linkList.className = 'copy-github-link-list';
+                                }
+
+                                newGroup();
+
+                                links.forEach(({text, group, urlOverride}) => {
+                                    if (group) {
+                                        newGroup();
+
+                                        if (text) {
+                                            pendingGroupTitle = document.createElement('div');
+                                            pendingGroupTitle.className = 'copy-github-link-group';
+                                            pendingGroupTitle.innerText = text;
+                                        }
+                                        else {
+                                            pendingGroupTitle = null;
+                                        }
+                                    }
+                                    else if (text) {
+                                        if (pendingGroupTitle) {
+                                            linkPopupBodyContent.appendChild(pendingGroupTitle);
+                                            pendingGroupTitle = null;
+                                        }
+
+                                        const linkUrl = urlOverride || url;
+
                                         const listItem = document.createElement('li');
                                             const anchor = document.createElement('a');
                                             anchor.innerText = text;
-                                            anchor.href = url;
-                                            anchor.title = `Click to copy this link to the clipboard.\n\nText:\n${text}\n\nURL:\n${url}`;
+                                            anchor.href = linkUrl;
+                                            anchor.title = `Click to copy this link to the clipboard.\n\nText:\n${text}\n\nURL:\n${linkUrl}`;
                                             anchor.onclick = event => {
-                                                copyLinkToClipboard({ url, text });
+                                                copyLinkToClipboard({ url: linkUrl, text });
                                                 anchor.className = 'copy-github-link-clicked';
 
                                                 window.setTimeout(() => anchor.className = null, 250);
@@ -124,8 +150,17 @@ export default function addLinksToPage(links) {
         return linkDetails;
     }
 
-    function renderLinkButton(header, containerId, includeTextLabel, buttonClass) {
+    function renderLinkButton(header, optionDisabled, containerId, includeTextLabel, buttonClass) {
         const existing = document.getElementById(containerId);
+
+        if (optionDisabled) {
+            if (existing) {
+                header.removeChild(existing);
+            }
+
+            return;
+        }
+
         const linkButton = createLinkButton(includeTextLabel, buttonClass);
 
         const linkContainer = document.createElement('div');
@@ -142,13 +177,14 @@ export default function addLinksToPage(links) {
     }
 
     const appHeader = document.querySelector('.AppHeader-actions');
-    const [pullRequestOrIssueHeader] = [...document.getElementsByClassName('gh-header-actions')];
 
     if (appHeader) {
-        renderLinkButton(appHeader, 'copy-github-link-appheader', false, 'AppHeader-button');
+        renderLinkButton(appHeader, options.disableAppHeaderButton, 'copy-github-link-appheader', false, 'AppHeader-button');
     }
 
+    const [pullRequestOrIssueHeader] = [...document.getElementsByClassName('gh-header-actions')];
+
     if (pullRequestOrIssueHeader) {
-        renderLinkButton(pullRequestOrIssueHeader, 'copy-github-link-pullorissue', true);
+        renderLinkButton(pullRequestOrIssueHeader, options.disablePullRequestIssueButton, 'copy-github-link-pullorissue', true);
     }
 }

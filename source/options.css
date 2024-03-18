@@ -1,0 +1,89 @@
+html {
+    background-image: url('images/logo-1024.png');
+    background-position: 50% 125px;
+    background-repeat: no-repeat;
+    margin: 0;
+}
+
+body {
+    background-color: rgba(255, 255, 255, 0.9);
+    margin: 0;
+    padding-left: 64px;
+}
+
+h1 {
+    margin-left: -40px;
+}
+
+h1 img#logo {
+    width: 32px;
+    height: 32px;
+    vertical-align: text-bottom;
+}
+
+span#status-message {
+    margin-left: 16px;
+}
+
+fieldset {
+    margin-top: 16px;
+}
+
+fieldset legend {
+    font-weight: bold;
+}
+
+fieldset div {
+    margin: 8px 0;
+}
+
+fieldset textarea {
+    width: calc(100% - 8px);
+}
+
+fieldset label.token {
+    font-weight: bold;
+}
+
+.grid-columns {
+    display: flex;
+    flex-direction: row;
+    margin: 0;
+    padding: 0;
+}
+
+.grid-column {
+    margin: 0;
+    padding: 0;
+}
+
+.grid-columns-50-50 .grid-column {
+    width: 50%;
+    margin-right: 12px;
+}
+
+fieldset div.token-group label {
+    display: block;
+}
+
+fieldset dl {
+    margin: 4px 8px 12px 8px;
+    padding: 0;
+}
+
+fieldset dl .grid-columns dt {
+    width: 20%;
+    display: inline;
+    font-weight: bold;
+}
+
+fieldset dl .grid-columns dd {
+    width: 80%;
+    display: inline;
+    margin-inline-start: 0;
+    margin-bottom: 3px;
+}
+
+fieldset dl dd .example {
+    margin: 0;
+}
