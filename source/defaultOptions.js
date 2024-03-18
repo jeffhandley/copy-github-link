@@ -4,7 +4,7 @@ export default {
 
   linkFormats: [
       ["<group> Pull Request / Issue", "{number}"],
-      "{org}/{repo}/#{number}",
+      "{org}/{repo}#{number}",
       "#{number}",
       "",
       "<comment> Additional pull/issue links in a new group",
