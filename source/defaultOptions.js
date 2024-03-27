@@ -1,6 +1,7 @@
 export default {
     disableAppHeaderButton: false,
     disablePullRequestIssueButton: false,
+    disableRepoHeaderButton: false,
 
     linkFormats: [
         ["<group> Pull Request / Issue", "{number}"],

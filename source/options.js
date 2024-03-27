@@ -4,6 +4,7 @@ const logoImage = document.getElementById('logo');
 logoImage.src = chrome.runtime.getURL('images/icon-32-enabled.png');
 
 const disableAppHeaderElement = document.getElementById('disable-app-header');
+const disableRepoHeaderElement = document.getElementById('disable-repo-header');
 const disablePullRequestIssueElement = document.getElementById('disable-pullrequest-issue');
 const linkFormatsTextArea = document.getElementById('link-formats');
 
@@ -28,9 +29,11 @@ function convertLinkFormatsToText(linkFormats) {
     ) + '\n]\n';
 }
 
-function renderOptions({disableAppHeaderButton, disablePullRequestIssueButton, linkFormats}) {
+function renderOptions({disableAppHeaderButton, disableRepoHeaderButton, disablePullRequestIssueButton, linkFormats}) {
     disableAppHeaderElement.checked = disableAppHeaderButton;
+    disableRepoHeaderElement.checked = disableRepoHeaderButton;
     disablePullRequestIssueElement.checked = disablePullRequestIssueButton;
+
     linkFormatsTextArea.value = convertLinkFormatsToText(linkFormats);
 }
 
@@ -41,6 +44,7 @@ function saveOptionsToStorage() {
         chrome.storage.sync.set(
             {
                 disableAppHeaderButton: !!disableAppHeaderElement.checked,
+                disableRepoHeaderButton: !!disableRepoHeaderElement.checked,
                 disablePullRequestIssueButton: !!disablePullRequestIssueElement.checked,
                 linkFormats
             },

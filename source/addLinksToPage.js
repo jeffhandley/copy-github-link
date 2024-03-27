@@ -160,7 +160,7 @@ export default function addLinksToPage(options, links) {
         return buttonGroup;
     }
 
-    function renderLinkButton(header, optionDisabled, containerId, includeTextLabel, buttonClass, linkClass) {
+    function renderLinkButton(header, elementType, optionDisabled, containerId, includeTextLabel, buttonClass, linkClass) {
         const existing = document.getElementById(containerId);
 
         if (optionDisabled || !links || !links.length) {
@@ -173,7 +173,7 @@ export default function addLinksToPage(options, links) {
 
         const linkButton = createLinkButton(containerId, includeTextLabel, buttonClass, linkClass);
 
-        const linkContainer = document.createElement('div');
+        const linkContainer = document.createElement(elementType);
         linkContainer.id = containerId;
         linkContainer.className = 'copy-github-link-container';
         linkContainer.appendChild(linkButton);
@@ -189,12 +189,18 @@ export default function addLinksToPage(options, links) {
     const appHeader = document.querySelector('.AppHeader-actions');
 
     if (appHeader) {
-        renderLinkButton(appHeader, options.disableAppHeaderButton, 'appheader', false, '', 'pl-2 pr-2');
+        renderLinkButton(appHeader, 'div', options.disableAppHeaderButton, 'appheader', false, '', 'pl-2 pr-2');
     }
 
     const [pullRequestOrIssueHeader] = [...document.getElementsByClassName('gh-header-actions')];
 
     if (pullRequestOrIssueHeader) {
-        renderLinkButton(pullRequestOrIssueHeader, options.disablePullRequestIssueButton, 'pullorissue', true, 'btn-sm');
+        renderLinkButton(pullRequestOrIssueHeader, 'div', options.disablePullRequestIssueButton, 'pullorissue', true, 'btn-sm');
+    }
+
+    const [pageHeadActions] = [...document.getElementsByClassName('pagehead-actions')];
+
+    if (pageHeadActions) {
+        renderLinkButton(pageHeadActions, 'li', options.disableRepoHeaderButton, 'pagehead', true, 'btn-sm');
     }
 }
