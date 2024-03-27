@@ -10,6 +10,9 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
 
             let [format, enablers, disablers, urlOverride] = item;
             const tokens = /\{\w+\}/g;
+            const groupPattern = /\<group\>/;
+            const commentPattern = /\<comment\>/;
+            const defaultPattern = /\<default\>/;
 
             const formatTokens = [...new String(format).matchAll(tokens).map(t => t[0])];
             const enablerTokens = [...formatTokens, ...new String(enablers).matchAll(tokens).map(t => t[0])];
@@ -65,18 +68,24 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
 
             if (disabled) return enabledItems;
 
-            if (format && format.match && format.match(/\<group\>/)) {
+            if (format && format.match && format.match(groupPattern)) {
                 return [
                     ...enabledItems, {
                         group: true,
-                        text: format.replace('<group>', ''),
+                        text: format.replace(groupPattern, ''),
                         urlOverride
                     }
                 ];
             }
 
-            if (format && format.match && format.match(/\<comment\>/)) {
+            if (format && format.match && format.match(commentPattern)) {
                 return enabledItems;
+            }
+
+            const isDefault = (format && format.match && format.match(defaultPattern));
+
+            if (isDefault) {
+                format = format.replace(defaultPattern, '');
             }
 
             const replaceTokens = template => template && template
@@ -94,7 +103,8 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
                 .replace('{codefile}', codefile)
                 .replace('{codebranch}', codebranch)
                 .replace('{commit_long}', commit_long)
-                .replace('{commit_short}', commit_short);
+                .replace('{commit_short}', commit_short)
+                .trim();
 
             let linkText = replaceTokens(format);
             const linkUrl = replaceTokens(urlOverride);
@@ -110,7 +120,8 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
                 ...enabledItems,
                 {
                     text: linkText,
-                    urlOverride: linkUrl
+                    urlOverride: linkUrl,
+                    ...(isDefault ? { isDefault } : {})
                 }
             ];
         }, []);

@@ -30,6 +30,11 @@
                 </div>
 
                 <div>
+                    <input type="checkbox" id="disable-repo-header" />
+                    <label for="disable-repo-header"><strong>Disable button in the Repository page header.</strong> This button is displayed to the right of the Repository name, before the other buttons in the page header.</label>
+                </div>
+
+                <div>
                     <input type="checkbox" id="disable-pullrequest-issue" />
                     <label for="disable-pullrequest-issue"><strong>Disable button on Pull Request and Issue pages.</strong> This button is displayed to the right of the Pull Request or Issue title, before other buttons in the page header.</label>
                 </div>
@@ -193,6 +198,13 @@
                                 <div class="grid-columns">
                                     <dt><code>&lt;comment&gt;</code></dt>
                                     <dd>Used for keeping comments in the JSON array without rendering an element.</dd>
+                                </div>
+                            </dl>
+
+                            <dl>
+                                <div class="grid-columns">
+                                    <dt><code>&lt;default&gt;</code></dt>
+                                    <dd>Mark a link format as a candidate for the default link format for one-click copying. The first visible link marked as a default will be used as the default format. If no visible links are marked as default, then the first link in the list will be treated as the default.</dd>
                                 </div>
                             </dl>
                         </div>
