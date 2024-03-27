@@ -8,7 +8,7 @@ Generates formatted GitHub links that can be copied to the clipboard from any gi
 
 This extension is published to the Chrome Web Store, which can be used for both Chrome and Edge.
 
-* [Copy GitHub Link version 1.2.0](https://chromewebstore.google.com/detail/copy-github-link/dnfnnlockpehnpkfdbejdogbfkjfeaan)
+* [Copy GitHub Link](https://chromewebstore.google.com/detail/copy-github-link/dnfnnlockpehnpkfdbejdogbfkjfeaan)
 
 The extension can also be installed locally by cloning this repository, turning on on Developer Mode in your browser's extension settings, and choosing to 'Load Unpacked' from the `source` folder.
 
