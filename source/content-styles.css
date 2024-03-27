@@ -2,6 +2,11 @@ h5 {
     padding-bottom: 8px;
 }
 
+.BtnGroup-parent.copy-github-link-buttongroup:active {
+    /* Override BtnGroup-parent:active, which sets z-index to 1 which is behind other content (namely on the PR files changed page) */
+    z-index: unset;
+}
+
 .copy-github-link-container div.dropdown-menu {
     top:6px;
     width: max-content;

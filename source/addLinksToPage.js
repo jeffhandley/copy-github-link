@@ -2,6 +2,19 @@ export default function addLinksToPage(options, links) {
     const url = location.href;
     const logoUrl = chrome.runtime.getURL('images/logo-256.png');
 
+    function copyLinkToClipboard({ url, text }) {
+        const overrideCopyCommand = (event) => {
+            event.clipboardData.setData('text/plain', text);
+            event.clipboardData.setData('text/html', `<a href='${url}'>${text}</a>`);
+
+            event.preventDefault();
+        };
+
+        document.addEventListener('copy', overrideCopyCommand);
+        document.execCommand('copy');
+        document.removeEventListener('copy', overrideCopyCommand);
+    }
+
     function createLinkButton(id, includeTextLabel, buttonClass = '', linkClass = '') {
         const [defaultLink] = links.filter(l => !l.group).sort((a, b) => (a.isDefault ? -1 : (b.isDefault ? 1 : 0)));
 
@@ -21,7 +34,7 @@ export default function addLinksToPage(options, links) {
 
                 const classNameRestore = buttonGroupDefaultLink.className;
                 buttonGroupDefaultLink.className += ' btn-primary';
-                window.setTimeout(() => buttonGroupDefaultLink.className = classNameRestore, 250);
+                window.setTimeout(() => buttonGroupDefaultLink.className = classNameRestore, 400);
 
                 event.preventDefault();
             }
@@ -49,7 +62,7 @@ export default function addLinksToPage(options, links) {
 
             const buttonGroupDetails = document.createElement('details');
             buttonGroupDetails.id = `copy-github-link-menu-${id}`;
-            buttonGroupDetails.className = 'details-reset details-overlay BtnGroup-parent d-inline-block position-relative';
+            buttonGroupDetails.className = 'copy-github-link-buttongroup details-reset details-overlay BtnGroup-parent d-inline-block position-relative';
             buttonGroupDetails.setAttribute('group_item', true);
             buttonGroupDetails.setAttribute('data-view-component', true);
 

@@ -41,7 +41,7 @@ function setActionState(enabled) {
             "64": `images/icon-64-${(enabled ? 'enabled' : 'disabled')}.png`,
             "128": `images/icon-128-${(enabled ? 'enabled' : 'disabled')}.png`
         }
-    })
+    });
 }
 
 async function tabLoaded(tab) {
