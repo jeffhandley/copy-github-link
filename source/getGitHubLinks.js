@@ -1,5 +1,5 @@
 export default function getGitHubLinks({linkFormats}, { url, title }) {
-    function parseLinkFormats(linkFormats, { org, repo, number, author, title, url, origin, hostname, pathname, hash, codepath, codebranch }) {
+    function parseLinkFormats(linkFormats, { org, repo, number, author, title, url, origin, hostname, pathname, hash, codepath, codefile, codebranch, commit_long, commit_short }) {
         return linkFormats.reduce((enabledItems, item) => {
             // Skip over blank entries used for pretty formatting
             if (!item) return enabledItems;
@@ -30,7 +30,10 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
                     case '{pathname}': return (!!pathname);
                     case '{hash}': return (!!hash);
                     case '{codepath}': return (!!codepath);
+                    case '{codefile}': return (!!codefile);
                     case '{codebranch}': return (!!codebranch);
+                    case '{commit_long}': return (!!commit_long);
+                    case '{commit_short}': return (!!commit_short);
                     default: return true;
                 }
             }, true);
@@ -52,7 +55,10 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
                     case '{pathname}': return (!pathname);
                     case '{hash}': return (!hash);
                     case '{codepath}': return (!codepath);
+                    case '{codefile}': return (!codefile);
                     case '{codebranch}': return (!codebranch);
+                    case '{commit_long}': return (!commit_long);
+                    case '{commit_short}': return (!commit_short);
                     default: return false;
                 }
             }, false);
@@ -85,7 +91,10 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
                 .replace('{pathname}', pathname)
                 .replace('{hash}', hash)
                 .replace('{codepath}', codepath)
-                .replace('{codebranch}', codebranch);
+                .replace('{codefile}', codefile)
+                .replace('{codebranch}', codebranch)
+                .replace('{commit_long}', commit_long)
+                .replace('{commit_short}', commit_short);
 
             let linkText = replaceTokens(format);
             const linkUrl = replaceTokens(urlOverride);
@@ -113,7 +122,8 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
     const [org, repo, ...pathSegments ] = pathname.split('/');
 
     let isPull = false, isIssue = false, isPullOrIssue = false, number = null, author = null;
-    let isCodePath = false, codepath = null, codebranch = null;;
+    let isCodePath = false, codepath = null, codefile = null, codebranch = null;;
+    let isCommit = false, commit_long = null, commit_short = null;
 
     if (!!org && !!repo && pathSegments.length >= 2) {
         const [ appRoute, appPathRoot, ...appPathSegments ] = pathSegments;
@@ -125,6 +135,7 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
         number = isPullOrIssue ? parsedNumber : null;
 
         isCodePath = (appRoute === 'blob' || appRoute === 'tree') && appPathRoot;
+        isCommit = appRoute === 'commit' && appPathRoot;
 
         if (isPullOrIssue) {
             // Strip the pull/issue number and repo information from the page title
@@ -153,7 +164,13 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
             }
         }
         else if (isCodePath) {
-            codepath = (appPathSegments.length > 0) ? [appPathRoot, ...appPathSegments].join('/') : appPathRoot;
+            if (appPathSegments.length > 0) {
+                codepath = [appPathRoot, ...appPathSegments].join('/');
+                codefile = appPathSegments[appPathSegments.length - 1];
+            }
+            else {
+                codepath = appPathRoot;
+            }
 
             // Strip the repo information from the page title
             const titleParts = title.split(' · ');
@@ -182,7 +199,17 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
                 }
             }
         }
+        else if (isCommit) {
+            commit_long = appPathRoot;
+
+            // Grab the short commit hash from the title
+            const titleParts = title.split('@');
+
+            if (titleParts.length) {
+                commit_short = titleParts[titleParts.length - 1];
+            }
+        }
     }
 
-    return parseLinkFormats(linkFormats, { org, repo, number, author, title, url, origin, hostname, pathname, hash, codepath, codebranch });
+    return parseLinkFormats(linkFormats, { org, repo, number, author, title, url, origin, hostname, pathname, hash, codepath, codefile, codebranch, commit_long, commit_short });
 }

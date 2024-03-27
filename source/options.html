@@ -139,7 +139,7 @@
 
                     <div class="grid-column">
                         <div class="token-group">
-                            <label class="token">Tree / Blob File Path Elements</label>
+                            <label class="token">Tree / Blob / Commit Tokens</label>
 
                             These tokens only have values when the page is within a <strong>blob</strong>
                             or <strong>tree</strong> path, showing a code file or folder.
@@ -151,8 +151,23 @@
                                 </div>
 
                                 <div class="grid-columns">
+                                    <dt><code>{codefile}</code></dt>
+                                    <dd>File or folder name within the repository's code, without any parent folder names.<div class="example">Example: <code>options.html</code></div></dd>
+                                </div>
+
+                                <div class="grid-columns">
                                     <dt><code>{codebranch}</code></dt>
                                     <dd>Branch or commit used to view the current code file or folder.<div class="example">Example: <code>main</code></div></dd>
+                                </div>
+
+                                <div class="grid-columns">
+                                    <dt><code>{commit_long}</code></dt>
+                                    <dd>The full commit SHA when viewing the details for a commit.<div class="example">Example: <code>5a75b0af160a6c5c72f84a128b4195d7e9d79cd5</code></div></dd>
+                                </div>
+
+                                <div class="grid-columns">
+                                    <dt><code>{commit_short}</code></dt>
+                                    <dd>The short commit SHA when viewing the details for a commit.<div class="example">Example: <code>5a75b0a</code></div></dd>
                                 </div>
                             </dl>
                         </div>
