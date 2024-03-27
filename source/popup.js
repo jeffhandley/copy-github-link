@@ -16,7 +16,7 @@ loadOptionsFromStorage();
 
 const optionsLink = document.getElementById('options-link');
 const linkTarget = document.getElementById('link-target');
-const links = document.getElementById('links');
+const linksElement = document.getElementById('links');
 
 optionsLink.addEventListener('click', (event) => {
     chrome.runtime.openOptionsPage();
@@ -31,16 +31,16 @@ chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
     const linkTargetAnchor = document.createElement('a');
     linkTarget.innerText = url;
 
-    while (links.firstChild) links.removeChild(links.firstChild);
+    while (linksElement.firstChild) linksElement.removeChild(linksElement.firstChild);
 
-    const linkFormats = getGitHubLinks(currentOptions, {url, title});
-    if (!linkFormats || !linkFormats.length) return;
+    const links = getGitHubLinks(currentOptions, {url, title});
+    if (!links || !links.length) return;
 
     let linkList, pendingGroupTitle;
 
     const newGroup = () => {
         if (linkList && linkList.lastChild) {
-            links.appendChild(linkList);
+            linksElement.appendChild(linkList);
         }
 
         linkList = document.createElement('ul');
@@ -49,7 +49,9 @@ chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
 
     newGroup();
 
-    linkFormats.forEach(({ text, group, urlOverride }) => {
+    const [defaultLink] = links.filter(l => !l.group).sort((a, b) => (a.isDefault ? -1 : (b.isDefault ? 1 : 0)));
+
+    links.forEach(({ text, group, urlOverride }) => {
         if (group) {
             newGroup();
 
@@ -64,16 +66,17 @@ chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
         }
         else if (text) {
             if (pendingGroupTitle) {
-                links.appendChild(pendingGroupTitle);
+                linksElement.appendChild(pendingGroupTitle);
                 pendingGroupTitle = null;
             }
 
             const linkUrl = urlOverride || url;
+            const isDefault = text === defaultLink.text && urlOverride === defaultLink.urlOverride;
 
             const anchor = document.createElement('a');
             anchor.innerText = text;
             anchor.href = linkUrl;
-            anchor.title = `Click to copy this link to the clipboard.\n\nText:\n${text}\n\nURL:\n${linkUrl}`;
+            anchor.title = `Click to copy this link to the clipboard.${(isDefault ? ' This is the default format.' : '')}\n\nText:\n${text}\n\nURL:\n${linkUrl}`
 
             anchor.onclick = event => {
                 chrome.tabs.sendMessage(id, { type: 'copyLink', url: linkUrl, text });
@@ -86,10 +89,11 @@ chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
             };
 
             const listItem = document.createElement('li');
+            listItem.className = isDefault ? 'text-bold' : '';
             listItem.appendChild(anchor);
             linkList.appendChild(listItem);
         }
     });
 
-    links.appendChild(linkList);
+    linksElement.appendChild(linkList);
 });

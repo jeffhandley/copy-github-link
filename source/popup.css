@@ -46,3 +46,7 @@ ul.copy-github-link-list li a, ul.copy-github-link-list li a:active, ul.copy-git
 ul.copy-github-link-list li a:hover {
   text-decoration: underline;
 }
+
+.text-bold {
+  font-weight: bold;
+}

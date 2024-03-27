@@ -2,158 +2,168 @@ export default function addLinksToPage(options, links) {
     const url = location.href;
     const logoUrl = chrome.runtime.getURL('images/logo-256.png');
 
-    function createLinkButton(includeTextLabel, buttonClass = '') {
-        const linkDetails = document.createElement('details');
-        linkDetails.id = 'copy-github-link-details';
-        linkDetails.className = 'position-relative details-overlay details-reset hx_dropdown-fullscreen';
-        linkDetails.setAttribute('data-action', 'toggle:copy-github-link#onDetailsToggle');
+    function createLinkButton(id, includeTextLabel, buttonClass = '', linkClass = '') {
+        const [defaultLink] = links.filter(l => !l.group).sort((a, b) => (a.isDefault ? -1 : (b.isDefault ? 1 : 0)));
 
-            const linkSummary = document.createElement('summary');
-            linkSummary.className = `${buttonClass} Button--secondary Button--small Button`;
-            linkSummary.ariaDescription = 'Copy GitHub Link';
-            linkSummary.setAttribute('data-view-component', true);
+        const buttonGroup = document.createElement('div');
+        buttonGroup.setAttribute('data-view-component', true);
+        buttonGroup.className = 'BtnGroup d-flex';
 
-                const linkButton = document.createElement('span');
-                linkButton.className = 'Button-content';
+            const buttonGroupDefaultLink = document.createElement('a');
+            buttonGroupDefaultLink.id = `copy-github-link-button-${id}`;
+            buttonGroupDefaultLink.className = `${buttonClass} btn BtnGroup-item ${linkClass}`;
+            buttonGroupDefaultLink.setAttribute('icon', 'link');
+            buttonGroupDefaultLink.setAttribute('data-view-component', true);
+            buttonGroupDefaultLink.setAttribute('title', `Click to copy this link to the clipboard.\n\nText:\n${defaultLink.text}\n\nURL:\n${(defaultLink.urlOverride || url)}`);
 
-                    const linkButtonIcon = document.createElement('span');
-                    linkButtonIcon.className = 'Button-visual Button-leadingVisual';
+            buttonGroupDefaultLink.onclick = event => {
+                copyLinkToClipboard({ url: defaultLink.urlOverride || url, text: defaultLink.text });
 
-                        const linkButtonSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-                        linkButtonSvg.className = 'octicon octicon-link';
-                        linkButtonSvg.ariaHidden = true;
-                        linkButtonSvg.setAttribute('width', 16);
-                        linkButtonSvg.setAttribute('height', 16);
-                        linkButtonSvg.setAttribute('viewBox', '0 0 16 16');
-                        linkButtonSvg.setAttribute('version', '1.1');
-                        linkButtonSvg.setAttribute('data-view-component', true);
+                const classNameRestore = buttonGroupDefaultLink.className;
+                buttonGroupDefaultLink.className += ' btn-primary';
+                window.setTimeout(() => buttonGroupDefaultLink.className = classNameRestore, 250);
 
-                            const linkButtonSvgPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                            linkButtonSvgPath.setAttribute('d', 'm7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z');
-                            linkButtonSvg.appendChild(linkButtonSvgPath);
+                event.preventDefault();
+            }
 
-                        linkButtonIcon.appendChild(linkButtonSvg);
+                const buttonGroupDefaultIconSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                buttonGroupDefaultIconSvg.setAttribute('class', `octicon octicon-link ${(includeTextLabel ? 'mr-2' : 'mr-0')}`); // setting className on an SVG does not take effect
+                buttonGroupDefaultIconSvg.setAttribute('aria-hidden', true);
+                buttonGroupDefaultIconSvg.setAttribute('height', 16);
+                buttonGroupDefaultIconSvg.setAttribute('width', 16);
+                buttonGroupDefaultIconSvg.setAttribute('viewBox', '0 0 16 16');
+                buttonGroupDefaultIconSvg.setAttribute('version', '1.1');
 
-                    linkButton.appendChild(linkButtonIcon);
+                    const buttonGroupDefaultIconPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    buttonGroupDefaultIconPath.setAttribute('d', 'm7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z');
 
-                    if (includeTextLabel) {
-                        const linkButtonText = document.createElement('span');
-                        linkButtonText.className = 'Button-label';
-                        linkButtonText.innerText = 'Link';
-                        linkButton.appendChild(linkButtonText);
-                    }
+                    buttonGroupDefaultIconSvg.appendChild(buttonGroupDefaultIconPath);
 
-                    const linkButtonDropdown = document.createElement('span');
-                    linkButtonDropdown.className = 'Button-visual Button-trailingAction';
+                buttonGroupDefaultLink.appendChild(buttonGroupDefaultIconSvg);
 
-                        const linkButtonDropdownSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-                        linkButtonDropdownSvg.className = 'octicon octicon-triangle-down';
-                        linkButtonDropdownSvg.ariaHidden = true;
-                        linkButtonDropdownSvg.setAttribute('width', 16);
-                        linkButtonDropdownSvg.setAttribute('height', 16);
-                        linkButtonDropdownSvg.setAttribute('viewBox', '0 0 16 16');
-                        linkButtonDropdownSvg.setAttribute('version', '1.1');
-                        linkButtonDropdownSvg.setAttribute('data-view-component', true);
+                if (includeTextLabel) {
+                    buttonGroupDefaultLink.appendChild(document.createTextNode('Link'));
+                }
 
-                            const linkButtonDropdownSvgPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                            linkButtonDropdownSvgPath.setAttribute('d', 'm4.427 7.427 3.396 3.396a.25.25 0 0 0 .354 0l3.396-3.396A.25.25 0 0 0 11.396 7H4.604a.25.25 0 0 0-.177.427Z');
+            buttonGroup.appendChild(buttonGroupDefaultLink);
 
-                            linkButtonDropdownSvg.appendChild(linkButtonDropdownSvgPath);
-                        linkButtonDropdown.appendChild(linkButtonDropdownSvg);
-                    linkButton.appendChild(linkButtonDropdown);
-                linkSummary.appendChild(linkButton);
-            linkDetails.appendChild(linkSummary);
+            const buttonGroupDetails = document.createElement('details');
+            buttonGroupDetails.id = `copy-github-link-menu-${id}`;
+            buttonGroupDetails.className = 'details-reset details-overlay BtnGroup-parent d-inline-block position-relative';
+            buttonGroupDetails.setAttribute('group_item', true);
+            buttonGroupDetails.setAttribute('data-view-component', true);
 
-            const linkPopupContainer = document.createElement('div');
-            linkPopupContainer.className = 'position-relative';
+                const buttonGroupSummary = document.createElement('summary');
+                buttonGroupSummary.className = `${buttonClass} btn BtnGroup-item px-2 float-none ml-0`;
+                buttonGroupSummary.setAttribute('data-view-component', true);
+                buttonGroupSummary.setAttribute('role', 'button');
+                buttonGroupSummary.setAttribute('aria-haspopup', true);
+                buttonGroupSummary.setAttribute('title', 'Copy GitHub Link (open popup to choose a link format)');
 
-                const linkPopup = document.createElement('div');
-                linkPopup.className = 'dropdown-menu dropdown-menu-sw p-0';
+                    const buttonGroupSummarySvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                    buttonGroupSummarySvg.setAttribute('class', 'octicon octicon-triangle-down'); // setting className on an SVG does not take effect
+                    buttonGroupSummarySvg.setAttribute('height', 16);
+                    buttonGroupSummarySvg.setAttribute('width', 16);
+                    buttonGroupSummarySvg.setAttribute('viewBox', '0 0 16 16');
+                    buttonGroupSummarySvg.setAttribute('version', '1.1');
+                    buttonGroupSummarySvg.setAttribute('aria-hidden', true);
 
-                    const linkPopupBody = document.createElement('div');
-                    linkPopupBody.className = 'copy-github-link-body';
-                    linkPopupBody.setAttribute('style', `background-image: url('${logoUrl}');`);
+                        const buttonGroupSummaryPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                        buttonGroupSummaryPath.setAttribute('d', 'm4.427 7.427 3.396 3.396a.25.25 0 0 0 .354 0l3.396-3.396A.25.25 0 0 0 11.396 7H4.604a.25.25 0 0 0-.177.427Z');
+                        buttonGroupSummarySvg.appendChild(buttonGroupSummaryPath);
+                buttonGroupSummary.appendChild(buttonGroupSummarySvg);
+            buttonGroupDetails.appendChild(buttonGroupSummary);
 
-                        const linkPopupBodyContent = document.createElement('div');
-                        linkPopupBodyContent.className = 'copy-github-link-body-content';
+            const buttonGroupDropdown = document.createElement('div');
+            buttonGroupDropdown.className = 'dropdown-menu dropdown-menu-sw top-auto mt-2';
+            buttonGroupDropdown.setAttribute('role', 'menu');
+            buttonGroupDropdown.setAttribute('data-focus-trap', 'suspended');
 
-                            const linkPopupTitle = document.createElement('h4');
-                            linkPopupTitle.innerText = 'Copy GitHub Link';
-                            linkPopupBodyContent.appendChild(linkPopupTitle);
+                const linkPopupBody = document.createElement('div');
+                linkPopupBody.className = 'copy-github-link-body';
+                linkPopupBody.setAttribute('style', `background-image: url('${logoUrl}');`);
 
-                            const linkPopupSubtitle = document.createElement('h5');
-                            linkPopupSubtitle.innerText = url;
-                            linkPopupBodyContent.appendChild(linkPopupSubtitle);
+                    const linkPopupBodyContent = document.createElement('div');
+                    linkPopupBodyContent.className = 'copy-github-link-body-content';
 
-                            if (links && links.length) {
-                                let linkList, pendingGroupTitle;
+                        const linkPopupTitle = document.createElement('h4');
+                        linkPopupTitle.innerText = 'Copy GitHub Link';
+                        linkPopupBodyContent.appendChild(linkPopupTitle);
 
-                                const newGroup = () => {
-                                    if (linkList && linkList.lastChild) {
-                                        linkPopupBodyContent.appendChild(linkList);
-                                    }
+                        const linkPopupSubtitle = document.createElement('h5');
+                        linkPopupSubtitle.innerText = url;
+                        linkPopupBodyContent.appendChild(linkPopupSubtitle);
 
-                                    linkList = document.createElement('ul');
-                                    linkList.className = 'copy-github-link-list';
-                                }
+                        let linkList, pendingGroupTitle;
 
-                                newGroup();
-
-                                links.forEach(({text, group, urlOverride}) => {
-                                    if (group) {
-                                        newGroup();
-
-                                        if (text) {
-                                            pendingGroupTitle = document.createElement('div');
-                                            pendingGroupTitle.className = 'copy-github-link-group';
-                                            pendingGroupTitle.innerText = text;
-                                        }
-                                        else {
-                                            pendingGroupTitle = null;
-                                        }
-                                    }
-                                    else if (text) {
-                                        if (pendingGroupTitle) {
-                                            linkPopupBodyContent.appendChild(pendingGroupTitle);
-                                            pendingGroupTitle = null;
-                                        }
-
-                                        const linkUrl = urlOverride || url;
-
-                                        const listItem = document.createElement('li');
-                                            const anchor = document.createElement('a');
-                                            anchor.innerText = text;
-                                            anchor.href = linkUrl;
-                                            anchor.title = `Click to copy this link to the clipboard.\n\nText:\n${text}\n\nURL:\n${linkUrl}`;
-                                            anchor.onclick = event => {
-                                                copyLinkToClipboard({ url: linkUrl, text });
-                                                anchor.className = 'copy-github-link-clicked';
-
-                                                window.setTimeout(() => anchor.className = null, 250);
-                                                window.setTimeout(() => linkDetails.removeAttribute('open'), 300);
-
-                                                event.preventDefault();
-                                            }
-
-                                            listItem.appendChild(anchor);
-                                        linkList.appendChild(listItem);
-                                    }
-                                });
-
+                        const newGroup = () => {
+                            if (linkList && linkList.lastChild) {
                                 linkPopupBodyContent.appendChild(linkList);
                             }
-                        linkPopupBody.appendChild(linkPopupBodyContent);
-                    linkPopup.appendChild(linkPopupBody);
-                linkPopupContainer.appendChild(linkPopup);
-            linkDetails.appendChild(linkPopupContainer);
 
-        return linkDetails;
+                            linkList = document.createElement('ul');
+                            linkList.className = 'copy-github-link-list';
+                        }
+
+                        newGroup();
+
+                        links.forEach(({text, group, urlOverride}) => {
+                            if (group) {
+                                newGroup();
+
+                                if (text) {
+                                    pendingGroupTitle = document.createElement('div');
+                                    pendingGroupTitle.className = 'copy-github-link-group';
+                                    pendingGroupTitle.innerText = text;
+                                }
+                                else {
+                                    pendingGroupTitle = null;
+                                }
+                            }
+                            else if (text) {
+                                if (pendingGroupTitle) {
+                                    linkPopupBodyContent.appendChild(pendingGroupTitle);
+                                    pendingGroupTitle = null;
+                                }
+
+                                const linkUrl = urlOverride || url;
+
+                                const listItem = document.createElement('li');
+                                const isDefault = text === defaultLink.text && urlOverride === defaultLink.urlOverride;
+                                listItem.className = isDefault ? 'text-bold' : '';
+
+                                    const anchor = document.createElement('a');
+                                    anchor.innerText = text;
+                                    anchor.href = linkUrl;
+                                    anchor.title = `Click to copy this link to the clipboard.${(isDefault ? ' This is the default format.' : '')}\n\nText:\n${text}\n\nURL:\n${linkUrl}`;
+                                    anchor.onclick = event => {
+                                        copyLinkToClipboard({ url: linkUrl, text });
+                                        anchor.className = 'copy-github-link-clicked';
+
+                                        window.setTimeout(() => anchor.className = null, 250);
+                                        window.setTimeout(() => buttonGroupDetails.removeAttribute('open'), 300);
+
+                                        event.preventDefault();
+                                    }
+
+                                    listItem.appendChild(anchor);
+                                linkList.appendChild(listItem);
+                            }
+                        });
+
+                        linkPopupBodyContent.appendChild(linkList);
+                    linkPopupBody.appendChild(linkPopupBodyContent);
+                buttonGroupDropdown.appendChild(linkPopupBody);
+            buttonGroupDetails.appendChild(buttonGroupDropdown);
+        buttonGroup.appendChild(buttonGroupDetails);
+
+        return buttonGroup;
     }
 
-    function renderLinkButton(header, optionDisabled, containerId, includeTextLabel, buttonClass) {
+    function renderLinkButton(header, optionDisabled, containerId, includeTextLabel, buttonClass, linkClass) {
         const existing = document.getElementById(containerId);
 
-        if (optionDisabled) {
+        if (optionDisabled || !links || !links.length) {
             if (existing) {
                 header.removeChild(existing);
             }
@@ -161,7 +171,7 @@ export default function addLinksToPage(options, links) {
             return;
         }
 
-        const linkButton = createLinkButton(includeTextLabel, buttonClass);
+        const linkButton = createLinkButton(containerId, includeTextLabel, buttonClass, linkClass);
 
         const linkContainer = document.createElement('div');
         linkContainer.id = containerId;
@@ -179,12 +189,12 @@ export default function addLinksToPage(options, links) {
     const appHeader = document.querySelector('.AppHeader-actions');
 
     if (appHeader) {
-        renderLinkButton(appHeader, options.disableAppHeaderButton, 'copy-github-link-appheader', false, 'AppHeader-button');
+        renderLinkButton(appHeader, options.disableAppHeaderButton, 'appheader', false, '', 'pl-2 pr-2');
     }
 
     const [pullRequestOrIssueHeader] = [...document.getElementsByClassName('gh-header-actions')];
 
     if (pullRequestOrIssueHeader) {
-        renderLinkButton(pullRequestOrIssueHeader, options.disablePullRequestIssueButton, 'copy-github-link-pullorissue', true);
+        renderLinkButton(pullRequestOrIssueHeader, options.disablePullRequestIssueButton, 'pullorissue', true, 'btn-sm');
     }
 }

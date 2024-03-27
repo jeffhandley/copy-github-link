@@ -25,7 +25,7 @@
     "options_page": "options.html",
     "web_accessible_resources": [
         {
-            "resources": [ "images/icon-32-enabled.png", "images/logo-256.png", "images/logo-1024.png"],
+            "resources": [ "images/icon-32-enabled.png", "images/logo-256.png", "images/logo-1024.png" ],
             "matches": [ "https://github.com/*" ]
         }
     ],
