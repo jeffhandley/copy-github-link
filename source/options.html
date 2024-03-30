@@ -22,7 +22,7 @@
             <fieldset>
                 <legend>Display Options</legend>
 
-                The extension can add buttons to two places on GitHub.com: the site-wide app header and the Pull Request / Issue page header. These options allow disabling either or both on-page buttons. Regardless of these settings, the extension's toolbar icon will always open a popup with the links for the current page.
+                The extension can add buttons to three places on GitHub.com: the site-wide app header, the repository page header, and the pull request / issue page header. These options allow disabling any of those buttons. Regardless of these settings, the extension's toolbar icon will always open a popup with the links for the current page.
 
                 <div>
                     <input type="checkbox" id="disable-app-header" />
@@ -140,9 +140,7 @@
                                 </div>
                             </dl>
                         </div>
-                    </div>
 
-                    <div class="grid-column">
                         <div class="token-group">
                             <label class="token">Tree / Blob / Commit Tokens</label>
 
@@ -176,7 +174,9 @@
                                 </div>
                             </dl>
                         </div>
+                    </div>
 
+                    <div class="grid-column">
                         <div class="token-group">
                             <label class="token">Structure Elements</label>
 
@@ -205,6 +205,40 @@
                                 <div class="grid-columns">
                                     <dt><code>&lt;default&gt;</code></dt>
                                     <dd>Mark a link format as a candidate for the default link format for one-click copying. The first visible link marked as a default will be used as the default format. If no visible links are marked as default, then the first link in the list will be treated as the default.</dd>
+                                </div>
+                            </dl>
+                        </div>
+
+                        <div class="token-group">
+                            <label class="token">Button Elements</label>
+
+                            Links can be enabled or disabled based on which button was clicked to show the popup using the <code>tokens-required-to-enable</code> or <code>tokens-that-disable</code>. Multiple buttons can be listed in <code>tokens-required-to-enable</code> and any match will keep the link enabled.
+
+                            <dl>
+                                <div class="grid-columns">
+                                    <dt><code>[toolbar]</code></dt>
+                                    <dd>The browser extension toolbar button.</dd>
+                                </div>
+                            </dl>
+
+                            <dl>
+                                <div class="grid-columns">
+                                    <dt><code>[appheader]</code></dt>
+                                    <dd>The github.com site-wide app header visible at the top of all pages. This button is displayed at the top of the page, to the left of the profile buttons.</dd>
+                                </div>
+                            </dl>
+
+                            <dl>
+                                <div class="grid-columns">
+                                    <dt><code>[repoheader]</code></dt>
+                                    <dd>The page header for a repository's main page. This button is displayed to the right of the Repository name, before the other buttons in the page header.</dd>
+                                </div>
+                            </dl>
+
+                            <dl>
+                                <div class="grid-columns">
+                                    <dt><code>[pullorissue]</code></dt>
+                                    <dd>The page header for a pull request or issue. This button is displayed to the right of the Pull Request or Issue title, before other buttons in the page header.</dd>
                                 </div>
                             </dl>
                         </div>

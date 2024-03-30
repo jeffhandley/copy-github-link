@@ -36,6 +36,11 @@ chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
     const links = getGitHubLinks(currentOptions, {url, title});
     if (!links || !links.length) return;
 
+    const popupId = 'toolbar';
+    const popupLinks = [...links]
+        .filter(l => !l.enabledPopups || l.enabledPopups.includes(popupId))
+        .filter(l => !l.disabledPopups || !l.disabledPopups.includes(popupId));
+
     let linkList, pendingGroupTitle;
 
     const newGroup = () => {
@@ -49,9 +54,9 @@ chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
 
     newGroup();
 
-    const [defaultLink] = links.filter(l => !l.group).sort((a, b) => (a.isDefault ? -1 : (b.isDefault ? 1 : 0)));
+    const [defaultLink] = popupLinks.filter(l => !l.group).sort((a, b) => (a.isDefault ? -1 : (b.isDefault ? 1 : 0)));
 
-    links.forEach(({ text, group, urlOverride }) => {
+    popupLinks.forEach(({ text, group, urlOverride }) => {
         if (group) {
             newGroup();
 

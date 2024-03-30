@@ -16,8 +16,8 @@ export default function addLinksToPage(options, links) {
         document.removeEventListener('copy', overrideCopyCommand);
     }
 
-    function createLinkButton(id, includeTextLabel, buttonClass = '', linkClass = '') {
-        const [defaultLink] = links.filter(l => !l.group).sort((a, b) => (a.isDefault ? -1 : (b.isDefault ? 1 : 0)));
+    function createLinkButton(popupLinks, id, includeTextLabel, buttonClass = '', linkClass = '') {
+        const [defaultLink] = popupLinks.filter(l => !l.group).sort((a, b) => (a.isDefault ? -1 : (b.isDefault ? 1 : 0)));
 
         const buttonGroup = document.createElement('div');
         buttonGroup.setAttribute('data-view-component', true);
@@ -140,7 +140,7 @@ export default function addLinksToPage(options, links) {
 
                         newGroup();
 
-                        links.forEach(({text, group, urlOverride}) => {
+                        popupLinks.forEach(({text, group, urlOverride}) => {
                             if (group) {
                                 newGroup();
 
@@ -193,10 +193,16 @@ export default function addLinksToPage(options, links) {
         return buttonGroup;
     }
 
-    function renderLinkButton(header, elementType, optionDisabled, containerId, includeTextLabel, buttonClass, linkClass) {
-        const existing = document.getElementById(containerId);
+    function renderLinkButton(header, elementType, optionDisabled, popupId, includeTextLabel, buttonClass, linkClass) {
+        const existing = document.getElementById(popupId);
 
-        if (optionDisabled || !links || !links.length) {
+        const popupLinks = [...links]
+            .filter(l => !l.enabledPopups || l.enabledPopups.includes(popupId))
+            .filter(l => !l.disabledPopups || !l.disabledPopups.includes(popupId));
+
+        console.log(popupId, links, popupLinks);
+
+        if (optionDisabled || !popupLinks.length) {
             if (existing) {
                 header.removeChild(existing);
             }
@@ -204,10 +210,10 @@ export default function addLinksToPage(options, links) {
             return;
         }
 
-        const linkButton = createLinkButton(containerId, includeTextLabel, buttonClass, linkClass);
+        const linkButton = createLinkButton(popupLinks, popupId, includeTextLabel, buttonClass, linkClass);
 
         const linkContainer = document.createElement(elementType);
-        linkContainer.id = containerId;
+        linkContainer.id = popupId;
         linkContainer.className = 'copy-github-link-container';
         linkContainer.appendChild(linkButton);
 
@@ -234,6 +240,6 @@ export default function addLinksToPage(options, links) {
     const [pageHeadActions] = [...document.getElementsByClassName('pagehead-actions')];
 
     if (pageHeadActions) {
-        renderLinkButton(pageHeadActions, 'li', options.disableRepoHeaderButton, 'pagehead', true, 'btn-sm');
+        renderLinkButton(pageHeadActions, 'li', options.disableRepoHeaderButton, 'repoheader', true, 'btn-sm');
     }
 }
