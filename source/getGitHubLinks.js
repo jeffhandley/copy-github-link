@@ -47,21 +47,21 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
                 if (disabled) return true;
 
                 switch (token) {
-                    case '{org}': return (!org);
-                    case '{repo}': return (!repo);
-                    case '{number}': return (!number);
-                    case '{author}': return (!author);
-                    case '{title}': return (!title);
-                    case '{url}': return (!url);
-                    case '{origin}': return (!origin);
-                    case '{hostname}': return (!hostname);
-                    case '{pathname}': return (!pathname);
-                    case '{hash}': return (!hash);
-                    case '{codepath}': return (!codepath);
-                    case '{codefile}': return (!codefile);
-                    case '{codebranch}': return (!codebranch);
-                    case '{commit_long}': return (!commit_long);
-                    case '{commit_short}': return (!commit_short);
+                    case '{org}': return (!!org);
+                    case '{repo}': return (!!repo);
+                    case '{number}': return (!!number);
+                    case '{author}': return (!!author);
+                    case '{title}': return (!!title);
+                    case '{url}': return (!!url);
+                    case '{origin}': return (!!origin);
+                    case '{hostname}': return (!!hostname);
+                    case '{pathname}': return (!!pathname);
+                    case '{hash}': return (!!hash);
+                    case '{codepath}': return (!!codepath);
+                    case '{codefile}': return (!!codefile);
+                    case '{codebranch}': return (!!codebranch);
+                    case '{commit_long}': return (!!commit_long);
+                    case '{commit_short}': return (!!commit_short);
                     default: return false;
                 }
             }, false);
