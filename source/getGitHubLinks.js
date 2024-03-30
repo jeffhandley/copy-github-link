@@ -9,14 +9,29 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
             }
 
             let [format, enablers, disablers, urlOverride] = item;
+            format = new String(format || '');
+            enablers = new String(enablers || '');
+            disablers = new String(disablers || '');
+            urlOverride = new String(urlOverride || '') || null;
+
             const tokens = /\{\w+\}/g;
             const groupPattern = /\<group\>/;
             const commentPattern = /\<comment\>/;
             const defaultPattern = /\<default\>/;
+            const popupPattern = /\[(\w+)\]/g;
 
-            const formatTokens = [...new String(format).matchAll(tokens).map(t => t[0])];
-            const enablerTokens = [...formatTokens, ...new String(enablers).matchAll(tokens).map(t => t[0])];
-            const disablerTokens = [...new String(disablers).matchAll(tokens).map(t => t[0])];
+            const formatTokens = [...format.matchAll(tokens).map(t => t[0].toLowerCase())];
+            const enablerTokens = [...formatTokens, ...enablers.matchAll(tokens).map(t => t[0].toLowerCase())];
+            const disablerTokens = [...disablers.matchAll(tokens).map(t => t[0].toLowerCase())];
+
+            // Get the captured popup id values from matches
+            const enabledPopups = [...enablers.matchAll(popupPattern).map(t => t[1].toLowerCase())];
+            const disabledPopups = [...disablers.matchAll(popupPattern).map(t => t[1].toLowerCase())];
+
+            const popups = {
+                ...(enabledPopups.length ? { enabledPopups } : { }),
+                ...(disabledPopups.length ? { disabledPopups } : { }),
+            };
 
             const enabled = enablerTokens.reduce((enabled, token) => {
                 if (!enabled) return false;
@@ -47,21 +62,21 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
                 if (disabled) return true;
 
                 switch (token) {
-                    case '{org}': return (!org);
-                    case '{repo}': return (!repo);
-                    case '{number}': return (!number);
-                    case '{author}': return (!author);
-                    case '{title}': return (!title);
-                    case '{url}': return (!url);
-                    case '{origin}': return (!origin);
-                    case '{hostname}': return (!hostname);
-                    case '{pathname}': return (!pathname);
-                    case '{hash}': return (!hash);
-                    case '{codepath}': return (!codepath);
-                    case '{codefile}': return (!codefile);
-                    case '{codebranch}': return (!codebranch);
-                    case '{commit_long}': return (!commit_long);
-                    case '{commit_short}': return (!commit_short);
+                    case '{org}': return (!!org);
+                    case '{repo}': return (!!repo);
+                    case '{number}': return (!!number);
+                    case '{author}': return (!!author);
+                    case '{title}': return (!!title);
+                    case '{url}': return (!!url);
+                    case '{origin}': return (!!origin);
+                    case '{hostname}': return (!!hostname);
+                    case '{pathname}': return (!!pathname);
+                    case '{hash}': return (!!hash);
+                    case '{codepath}': return (!!codepath);
+                    case '{codefile}': return (!!codefile);
+                    case '{codebranch}': return (!!codebranch);
+                    case '{commit_long}': return (!!commit_long);
+                    case '{commit_short}': return (!!commit_short);
                     default: return false;
                 }
             }, false);
@@ -73,7 +88,8 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
                     ...enabledItems, {
                         group: true,
                         text: format.replace(groupPattern, ''),
-                        urlOverride
+                        urlOverride,
+                        ...popups
                     }
                 ];
             }
@@ -121,7 +137,8 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
                 {
                     text: linkText,
                     urlOverride: linkUrl,
-                    ...(isDefault ? { isDefault } : {})
+                    ...(isDefault ? { isDefault } : {}),
+                    ...popups
                 }
             ];
         }, []);
