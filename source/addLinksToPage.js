@@ -200,8 +200,6 @@ export default function addLinksToPage(options, links) {
             .filter(l => !l.enabledPopups || l.enabledPopups.includes(popupId))
             .filter(l => !l.disabledPopups || !l.disabledPopups.includes(popupId));
 
-        console.log(popupId, links, popupLinks);
-
         if (optionDisabled || !popupLinks.length) {
             if (existing) {
                 header.removeChild(existing);
