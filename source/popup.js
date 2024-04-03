@@ -54,7 +54,7 @@ chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
 
     newGroup();
 
-    const [defaultLink] = popupLinks.filter(l => !l.group).sort((a, b) => (a.isDefault ? -1 : (b.isDefault ? 1 : 0)));
+    const defaultLink = popupLinks.find(l => l.isDefault && !l.group);
 
     popupLinks.forEach(({ text, group, urlOverride }) => {
         if (group) {

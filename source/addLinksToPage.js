@@ -17,7 +17,7 @@ export default function addLinksToPage(options, links) {
     }
 
     function createLinkButton(popupLinks, id, includeTextLabel, buttonClass = '', linkClass = '') {
-        const [defaultLink] = popupLinks.filter(l => !l.group).sort((a, b) => (a.isDefault ? -1 : (b.isDefault ? 1 : 0)));
+        const defaultLink = popupLinks.find(l => l.isDefault && !l.group);
 
         const buttonGroup = document.createElement('div');
         buttonGroup.setAttribute('data-view-component', true);
