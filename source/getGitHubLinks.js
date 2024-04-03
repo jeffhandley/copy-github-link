@@ -1,5 +1,5 @@
 export default function getGitHubLinks({linkFormats}, { url, title }) {
-    function parseLinkFormats(linkFormats, { org, repo, number, author, title, url, origin, hostname, pathname, hash, codepath, codefile, codebranch, commit_long, commit_short }) {
+    function parseLinkFormats(linkFormats, { org, repo, number, author, title, url, origin, hostname, pathname, hash, codepath, codefile, codebranch, commit_long, commit_short, project_number, project_name, project_view_name }) {
         return linkFormats.reduce((enabledItems, item) => {
             // Skip over blank entries used for pretty formatting
             if (!item) return enabledItems;
@@ -52,6 +52,10 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
                     case '{codebranch}': return (!!codebranch);
                     case '{commit_long}': return (!!commit_long);
                     case '{commit_short}': return (!!commit_short);
+                    case '{project_name}': return (!!project_name);
+                    case '{project_number}': return (!!project_number);
+                    case '{project_view_name}': return (!!project_view_name);
+                    case '{project_view_number}': return (!!project_view_number);
                     default: return true;
                 }
             }, true);
@@ -77,6 +81,10 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
                     case '{codebranch}': return (!!codebranch);
                     case '{commit_long}': return (!!commit_long);
                     case '{commit_short}': return (!!commit_short);
+                    case '{project_name}': return (!!project_name);
+                    case '{project_number}': return (!!project_number);
+                    case '{project_view_name}': return (!!project_view_name);
+                    case '{project_view_number}': return (!!project_view_number);
                     default: return false;
                 }
             }, false);
@@ -120,6 +128,10 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
                 .replace('{codebranch}', codebranch)
                 .replace('{commit_long}', commit_long)
                 .replace('{commit_short}', commit_short)
+                .replace('{project_name}', project_name)
+                .replace('{project_number}', project_number)
+                .replace('{project_view_name}', project_view_name)
+                .replace('{project_view_number}', project_view_number)
                 .trim();
 
             let linkText = replaceTokens(format);
@@ -147,11 +159,17 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
     let { origin, hostname, pathname, hash } = new URL(url);
     if (pathname.length > 1) pathname = pathname.substring(1);
 
-    const [org, repo, ...pathSegments ] = pathname.split('/');
+    let [org, repo, ...pathSegments ] = pathname.split('/');
 
     let isPull = false, isIssue = false, isPullOrIssue = false, number = null, author = null;
     let isCodePath = false, codepath = null, codefile = null, codebranch = null;;
     let isCommit = false, commit_long = null, commit_short = null;
+    let isProject = false, project_number = null, project_name = null, project_view_number, project_view_name = null;
+
+    if (org === 'orgs' && !!repo && pathSegments.length >= 1) {
+        org = repo;
+        repo = null;
+    }
 
     if (!!org && !!repo && pathSegments.length >= 2) {
         const [ appRoute, appPathRoot, ...appPathSegments ] = pathSegments;
@@ -238,6 +256,15 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
             }
         }
     }
+    else if (!!org && pathSegments.length >= 2 && pathSegments[0] === 'projects' && !!pathSegments[1]) {
+        isProject = true;
+        [, project_number, , project_view_number] = pathSegments; // ['projects', project_number, 'views', project_view_number]
 
-    return parseLinkFormats(linkFormats, { org, repo, number, author, title, url, origin, hostname, pathname, hash, codepath, codefile, codebranch, commit_long, commit_short });
+        const titleParts = title.split(' · ');
+        titleParts.reverse();
+
+        [project_name, project_view_name] = titleParts;
+    }
+
+    return parseLinkFormats(linkFormats, { org, repo, number, author, title, url, origin, hostname, pathname, hash, codepath, codefile, codebranch, commit_long, commit_short, project_number, project_name, project_view_name });
 }

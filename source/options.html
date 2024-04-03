@@ -178,6 +178,32 @@
 
                     <div class="grid-column">
                         <div class="token-group">
+                            <label class="token">Project Tokens</label>
+                            These tokens only have values when viewing a GitHub project.
+
+                            <dl>
+                                <div class="grid-columns">
+                                    <dt><code>{project_name}</code></dt>
+                                    <dd>The name of the GitHub project, excluding the view name or the org name.</dd>
+                                </div>
+
+                                <div class="grid-columns">
+                                    <dt><code>{project_number}</code></dt>
+                                    <dd>The GitHub project number.</dd>
+                                </div>
+
+                                <div class="grid-columns">
+                                    <dt><code>{project_view_name}</code></dt>
+                                    <dd>The name of the selected view for the current project.</dd>
+                                </div>
+
+                                <div class="grid-columns">
+                                    <dt><code>{project_view_number}</code></dt>
+                                    <dd>The GitHub project view number. This value can be null when viewing the default view for a project, even when the <code>{project_view_name}</code> has a value.</dd>
+                                </div>
+                            </dl>
+                        </div>
+                        <div class="token-group">
                             <label class="token">Structure Elements</label>
 
                             Group tokens are used to create separate groups of links; these elements are not links. Comment tokens are useful for editing the JSON data.
