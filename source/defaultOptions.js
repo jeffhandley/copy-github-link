@@ -30,7 +30,7 @@ export default {
         ["<group> Project Links","{project_name}"],
         "<default> {project_name}",
         "{project_name} - {project_view_name}",
-        "<default> {project_name} ({org})",
+        "{project_name} ({org})",
         "{project_name} - {project_view_name} ({org})",
         "",
         "<group> Org / Repo (targeting current page)",
