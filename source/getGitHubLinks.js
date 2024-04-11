@@ -95,7 +95,7 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
                 return [
                     ...enabledItems, {
                         group: true,
-                        text: format.replace(groupPattern, ''),
+                        text: format.replace(groupPattern, '').trim(),
                         urlOverride,
                         ...popups
                     }
