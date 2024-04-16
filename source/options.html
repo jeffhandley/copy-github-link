@@ -22,7 +22,7 @@
             <fieldset>
                 <legend>Display Options</legend>
 
-                The extension can add buttons to three places on GitHub.com: the site-wide app header, the repository page header, and the pull request / issue page header. These options allow disabling any of those buttons. Regardless of these settings, the extension's toolbar icon will always open a popup with the links for the current page.
+                The extension can add buttons to three places on GitHub.com: the site-wide app header, the repository page header, and the pull request/issue/discussion page header. These options allow disabling any of those buttons. Regardless of these settings, the extension's toolbar icon will always open a popup with the links for the current page.
 
                 <div>
                     <input type="checkbox" id="disable-app-header" />
@@ -36,7 +36,7 @@
 
                 <div>
                     <input type="checkbox" id="disable-pullrequest-issue" />
-                    <label for="disable-pullrequest-issue"><strong>Disable button on Pull Request and Issue pages.</strong> This button is displayed to the right of the Pull Request or Issue title, before other buttons in the page header.</label>
+                    <label for="disable-pullrequest-issue"><strong>Disable button on Pull Request, Issue, and Discussion pages.</strong> This button is displayed to the right of the Pull Request, Issue, or Discussion title, before other buttons in the page header.</label>
                 </div>
             </fieldset>
 
@@ -94,19 +94,19 @@
                         </div>
 
                         <div class="token-group">
-                            <label class="token">Pull Request or Issue Tokens</label>
+                            <label class="token">Pull Request / Issue / Discussion Tokens</label>
                             <dl>
                                 <div class="grid-columns">
                                     <dt><code>{number}</code></dt>
-                                    <dd>Pull Request or Issue number, as an integer.<div class="example">Example: <code>12345</code></div></dd>
+                                    <dd>Pull Request, Issue, or Discussion number, as an integer.<div class="example">Example: <code>12345</code></div></dd>
                                 </div>
                                 <div class="grid-columns">
                                     <dt><code>{author}</code></dt>
-                                    <dd>Pull Request author. Does not apply to Issues.<div class="example">Example: <code>jeffhandley</code></div></dd>
+                                    <dd>Pull Request author. Does not apply to Issues or Discussions.<div class="example">Example: <code>jeffhandley</code></div></dd>
                                 </div>
                                 <div class="grid-columns">
                                     <dt><code>{title}</code></dt>
-                                    <dd>Pull Request or Issue title, with GitHub's title suffix removed.</dd>
+                                    <dd>Pull Request, Issue, or Discussion title, with GitHub's title suffix removed.</dd>
                                 </div>
                             </dl>
                         </div>
@@ -264,7 +264,7 @@
                             <dl>
                                 <div class="grid-columns">
                                     <dt><code>[pullorissue]</code></dt>
-                                    <dd>The page header for a pull request or issue. This button is displayed to the right of the Pull Request or Issue title, before other buttons in the page header.</dd>
+                                    <dd>The page header for a pull request, issue, or discussion. This button is displayed to the right of the Pull Request, Issue, or Discussion title, before other buttons in the page header.</dd>
                                 </div>
                             </dl>
                         </div>
