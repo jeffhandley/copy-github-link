@@ -4,12 +4,9 @@ export default {
     disableRepoHeaderButton: false,
 
     linkFormats: [
-        ["<group> Pull Request / Issue","{number}"],
+        ["<group> Pull Request / Issue / Discussion","{number}"],
         "{org}/{repo}#{number}",
         "#{number}",
-        "",
-        "<comment> Additional pull/issue links in a new group",
-        ["<group>","{number}"],
         ["{title}","{number}"],
         ["{title} (#{number})","{org}{repo}"],
         "<default> {title} ({org}/{repo}#{number})",
@@ -50,7 +47,7 @@ export default {
         "<comment> The URL without the hash (but only when there was a hash)",
         ["{origin}/{pathname}","{hash}"],
         "",
-        "<comment> The URL path without the scheme or the origin or hash (but only when it's not a pull or issue)",
+        "<comment> The URL path without the scheme or the origin or hash (but only when it's not a pull, issue, or discussion)",
         ["{pathname}",null,"{number}"],
         "",
         ["<group> Link to Repository","{repo}","[pullorissue]"],

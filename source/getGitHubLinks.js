@@ -161,7 +161,7 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
 
     let [org, repo, ...pathSegments ] = pathname.split('/');
 
-    let isPull = false, isIssue = false, isPullOrIssue = false, number = null, author = null;
+    let isPull = false, isIssue = false, isDiscussion = false, isPullOrIssueOrDiscussion = false, number = null, author = null;
     let isCodePath = false, codepath = null, codefile = null, codebranch = null;;
     let isCommit = false, commit_long = null, commit_short = null;
     let isProject = false, project_number = null, project_name = null, project_view_number, project_view_name = null;
@@ -177,14 +177,16 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
 
         isPull = appRoute === 'pull' && !Number.isNaN(parsedNumber);
         isIssue = appRoute === 'issues' && !Number.isNaN(parsedNumber);
-        isPullOrIssue = isPull || isIssue;
-        number = isPullOrIssue ? parsedNumber : null;
+        isDiscussion = appRoute === 'discussions' && !Number.isNaN(parsedNumber);
+
+        isPullOrIssueOrDiscussion = isPull || isIssue || isDiscussion;
+        number = isPullOrIssueOrDiscussion ? parsedNumber : null;
 
         isCodePath = (appRoute === 'blob' || appRoute === 'tree') && appPathRoot;
         isCommit = appRoute === 'commit' && appPathRoot;
 
-        if (isPullOrIssue) {
-            // Strip the pull/issue number and repo information from the page title
+        if (isPullOrIssueOrDiscussion) {
+            // Strip the number and repo information from the page title
             const titleParts = title.split(' · ');
             titleParts.reverse();
 
