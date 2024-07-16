@@ -190,6 +190,11 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
             const titleParts = title.split(' · ');
             titleParts.reverse();
 
+            // When not signed in, some titles are suffixed with a 'GitHub' segment
+            if (titleParts[0] === 'GitHub') {
+                titleParts.shift();
+            }
+
             const [ /* repo */, /* number */, ...remainingTitleParts ] = titleParts;
             remainingTitleParts.reverse();
 
@@ -223,6 +228,11 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
             // Strip the repo information from the page title
             const titleParts = title.split(' · ');
             titleParts.reverse();
+
+            // When not signed in, some titles are suffixed with a 'GitHub' segment
+            if (titleParts[0] === 'GitHub') {
+                titleParts.shift();
+            }
 
             const [ /* repo */, ...remainingTitleParts ] = titleParts;
             remainingTitleParts.reverse;
@@ -264,6 +274,11 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
 
         const titleParts = title.split(' · ');
         titleParts.reverse();
+
+        // When not signed in, some titles are suffixed with a 'GitHub' segment
+        if (titleParts[0] === 'GitHub') {
+            titleParts.shift();
+        }
 
         [project_name, project_view_name] = titleParts;
     }
