@@ -1,6 +1,5 @@
 export default function addLinksToPage(options, links) {
     const url = location.href;
-    const logoUrl = chrome.runtime.getURL('images/logo-256.png');
     const optionsUrl = chrome.runtime.getURL('options.html');
 
     function copyLinkToClipboard({ url, text }) {
@@ -95,7 +94,6 @@ export default function addLinksToPage(options, links) {
 
                 const linkPopupBody = document.createElement('div');
                 linkPopupBody.className = 'copy-github-link-body';
-                linkPopupBody.setAttribute('style', `background-image: url('${logoUrl}');`);
 
                     const linkPopupBodyContent = document.createElement('div');
                     linkPopupBodyContent.className = 'copy-github-link-body-content';

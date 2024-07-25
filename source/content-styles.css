@@ -7,6 +7,10 @@ h5 {
     z-index: unset;
 }
 
+.copy-github-link-container a.BtnGroup-item, .copy-github-link-container summary.BtnGroup-item {
+    background: transparent;
+}
+
 .copy-github-link-container div.dropdown-menu {
     top:6px;
     width: max-content;
@@ -18,15 +22,13 @@ h5 {
 }
 
 .copy-github-link-body {
-  background-position: center;
-  background-repeat: no-repeat;
   min-height: 256px;
   margin: 0;
   padding: 0;
 }
 
 .copy-github-link-body .copy-github-link-body-content {
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: var(--bgColor-muted, var(--color-canvas-subtle));
   padding: 8px 12px;
   min-height: 256px;
 }
