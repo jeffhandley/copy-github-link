@@ -45,6 +45,11 @@ fieldset label.token {
     font-weight: bold;
 }
 
+.feedback-link {
+    float: right;
+    margin-right: 1em;
+}
+
 .grid-columns {
     display: flex;
     flex-direction: row;
