@@ -67,7 +67,7 @@ export default function addLinksToPage(options, links) {
             buttonGroupDetails.setAttribute('data-view-component', true);
 
                 const buttonGroupSummary = document.createElement('summary');
-                buttonGroupSummary.className = `${buttonClass} btn BtnGroup-item px-2 float-none ml-0`;
+                buttonGroupSummary.className = `${buttonClass} btn btn-block BtnGroup-item px-2 float-none ml-0`;
                 buttonGroupSummary.setAttribute('data-view-component', true);
                 buttonGroupSummary.setAttribute('role', 'button');
                 buttonGroupSummary.setAttribute('aria-haspopup', true);
@@ -235,15 +235,18 @@ export default function addLinksToPage(options, links) {
 
     const [oldStyleActionHeader] = [...document.getElementsByClassName('gh-header-actions')];
 
+    // The new Issue Types UI no longer uses `btn-sm` style on the buttons
+    const buttonClass = !!newActionHeader ? '' : 'btn-sm';
+
     const pullRequestOrIssueHeader = newActionHeader || oldStyleActionHeader;
 
     if (pullRequestOrIssueHeader) {
-        renderLinkButton(pullRequestOrIssueHeader, 'div', options.disablePullRequestIssueButton, 'pullorissue', true, 'btn-sm');
+        renderLinkButton(pullRequestOrIssueHeader, 'div', options.disablePullRequestIssueButton, 'pullorissue', true, buttonClass);
     }
 
     const [pageHeadActions] = [...document.getElementsByClassName('pagehead-actions')];
 
     if (pageHeadActions) {
-        renderLinkButton(pageHeadActions, 'li', options.disableRepoHeaderButton, 'repoheader', true, 'btn-sm');
+        renderLinkButton(pageHeadActions, 'li', options.disableRepoHeaderButton, 'repoheader', true, buttonClass);
     }
 }
