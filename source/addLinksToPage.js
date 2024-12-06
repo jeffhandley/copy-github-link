@@ -227,7 +227,15 @@ export default function addLinksToPage(options, links) {
         renderLinkButton(appHeader, 'div', options.disableAppHeaderButton, 'appheader', false, '', 'pl-2 pr-2');
     }
 
-    const [pullRequestOrIssueHeader] = [...document.getElementsByClassName('gh-header-actions')];
+    // With the new Issue Types (https://github.blog/changelog/2024-10-01-evolving-github-issues-public-preview/),
+    // the action block no longer has a unique class name, so search for it by `data-component` tag,
+    // but fall back to the older approach for repos that don't have types enabled.
+    const newHeaderOuterDiv = document.querySelector('[data-component="PH_Actions"]');
+    const newActionHeader = newHeaderOuterDiv ? newHeaderOuterDiv.firstElementChild : null;
+
+    const [oldStyleActionHeader] = [...document.getElementsByClassName('gh-header-actions')];
+
+    const pullRequestOrIssueHeader = newActionHeader || oldStyleActionHeader;
 
     if (pullRequestOrIssueHeader) {
         renderLinkButton(pullRequestOrIssueHeader, 'div', options.disablePullRequestIssueButton, 'pullorissue', true, 'btn-sm');
