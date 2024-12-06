@@ -28,9 +28,10 @@ h5 {
 }
 
 .copy-github-link-body .copy-github-link-body-content {
-  background-color: var(--bgColor-muted, var(--color-canvas-subtle));
   padding: 8px 12px;
   min-height: 256px;
+  font-size: var(--body-font-size, 14px);
+  font-weight: initial;
 }
 
 .copy-github-link-group {
