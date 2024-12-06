@@ -27,13 +27,29 @@ chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
     if (!isGitHub(tab)) return;
 
     const {id, url, title} = tab;
-
-    const linkTargetAnchor = document.createElement('a');
-    linkTarget.innerText = url;
-
     while (linksElement.firstChild) linksElement.removeChild(linksElement.firstChild);
 
-    const links = getGitHubLinks(currentOptions, {url, title});
+    const { links, urlOverride } = getGitHubLinks(currentOptions, {url, title});
+
+    const headerAnchor = document.createElement('a');
+    const headerUrl = urlOverride || url;
+    headerAnchor.innerText = headerUrl;
+    headerAnchor.href = headerUrl;
+    headerAnchor.title = `Click to copy this URL to the clipboard as plain text.\n\n${headerUrl}`
+
+    headerAnchor.onclick = event => {
+        chrome.tabs.sendMessage(id, { type: 'copyLink', text: headerUrl });
+
+        headerAnchor.className = 'copy-github-link-clicked';
+        window.setTimeout(() => headerAnchor.className = null, 250);
+        window.setTimeout(() => window.close(), 300);
+
+        event.preventDefault();
+    };
+
+    while (linkTarget.firstChild) linkTarget.removeChild(linkTarget.firstChild);
+    linkTarget.appendChild(headerAnchor);
+
     if (!links || !links.length) return;
 
     const popupId = 'toolbar';
@@ -56,7 +72,7 @@ chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
 
     const defaultLink = popupLinks.find(l => l.isDefault && !l.group) || popupLinks.find(l => !l.group) || {};
 
-    popupLinks.forEach(({ text, group, urlOverride }) => {
+    popupLinks.forEach(({ text, group, urlOverride: linkUrlOverride }) => {
         if (group) {
             newGroup();
 
@@ -75,8 +91,8 @@ chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
                 pendingGroupTitle = null;
             }
 
-            const linkUrl = urlOverride || url;
-            const isDefault = text === defaultLink.text && urlOverride === defaultLink.urlOverride;
+            const linkUrl = linkUrlOverride || urlOverride || url;
+            const isDefault = text === defaultLink.text && linkUrlOverride === defaultLink.urlOverride;
 
             const anchor = document.createElement('a');
             anchor.innerText = text;

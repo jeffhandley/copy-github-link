@@ -30,6 +30,11 @@ h2 {
   font-weight: normal;
 }
 
+h2 a, h2 a:active, h2 a:visited {
+  color: #0969DA;
+  text-decoration: none;
+}
+
 ul.copy-github-link-list {
   margin: 0;
 }

@@ -1,11 +1,14 @@
-export default function addLinksToPage(options, links) {
-    const url = location.href;
+export default function addLinksToPage(options, links, urlOverride, previousDelay) {
+    const url = urlOverride || location.href;
     const optionsUrl = chrome.runtime.getURL('options.html');
 
     function copyLinkToClipboard({ url, text }) {
         const overrideCopyCommand = (event) => {
             event.clipboardData.setData('text/plain', text);
-            event.clipboardData.setData('text/html', `<a href='${url}'>${text}</a>`);
+
+            if (!!url) {
+                event.clipboardData.setData('text/html', `<a href='${url}'>${text}</a>`);
+            }
 
             event.preventDefault();
         };
@@ -122,7 +125,20 @@ export default function addLinksToPage(options, links) {
                         linkPopupBodyContent.appendChild(linkPopupTitle);
 
                         const linkPopupSubtitle = document.createElement('h5');
-                        linkPopupSubtitle.innerText = url;
+                            const linkPopupSubtitleAnchor = document.createElement('a');
+                            linkPopupSubtitleAnchor.innerText = url;
+                            linkPopupSubtitleAnchor.href = '#';
+                            linkPopupSubtitleAnchor.title = `Click to copy this URL to the clipboard as plain text.\n\n${url}`;
+                            linkPopupSubtitleAnchor.onclick = event => {
+                                copyLinkToClipboard({ text: url });
+                                linkPopupSubtitleAnchor.className = 'copy-github-link-clicked';
+
+                                window.setTimeout(() => linkPopupSubtitleAnchor.className = null, 250);
+                                window.setTimeout(() => buttonGroupDetails.removeAttribute('open'), 300);
+
+                                event.preventDefault();
+                            };
+                            linkPopupSubtitle.appendChild(linkPopupSubtitleAnchor);
                         linkPopupBodyContent.appendChild(linkPopupSubtitle);
 
                         let linkList, pendingGroupTitle;
@@ -175,7 +191,7 @@ export default function addLinksToPage(options, links) {
                                         window.setTimeout(() => buttonGroupDetails.removeAttribute('open'), 300);
 
                                         event.preventDefault();
-                                    }
+                                    };
 
                                     listItem.appendChild(anchor);
                                 linkList.appendChild(listItem);
@@ -242,6 +258,12 @@ export default function addLinksToPage(options, links) {
 
     if (pullRequestOrIssueHeader) {
         renderLinkButton(pullRequestOrIssueHeader, 'div', options.disablePullRequestIssueButton, 'pullorissue', true, buttonClass);
+    } else if (!!urlOverride) {
+        // When there's a urlOverride, we might be loading in a project pane
+        // This could have a delayed rendering of the issue pane, so we will
+        // use a backoff strategy for retries
+        const delay = (previousDelay || 0) + 1000;
+        window.setTimeout(() => addLinksToPage(options, links, urlOverride, delay), delay);
     }
 
     const [pageHeadActions] = [...document.getElementsByClassName('pagehead-actions')];

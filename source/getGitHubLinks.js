@@ -156,10 +156,11 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
         }, []);
     }
 
-    let { origin, hostname, pathname, hash } = new URL(url);
+    let { origin, hostname, pathname, hash, searchParams } = new URL(url);
     if (pathname.length > 1) pathname = pathname.substring(1);
 
     let [org, repo, ...pathSegments ] = pathname.split('/');
+    let urlOverride = null;
 
     let isPull = false, isIssue = false, isDiscussion = false, isPullOrIssueOrDiscussion = false, number = null, author = null;
     let isCodePath = false, codepath = null, codefile = null, codebranch = null;;
@@ -280,8 +281,25 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
             titleParts.shift();
         }
 
-        [project_name, project_view_name] = titleParts;
+        let remainingTitleParts = [];
+        [project_name, ...remainingTitleParts] = titleParts;
+        project_view_name = remainingTitleParts.join(' · ');
+
+        // When viewing an issue pane, we produce links to the issue instead of to the project
+        if (searchParams.has('pane', 'issue')) {
+            let [ issueOrg, issueRepo, issueNumber ] = searchParams.get('issue').split('|');
+            const parsedNumber = parseInt(issueNumber);
+
+            if (!Number.isNaN(parsedNumber)) {
+                const issueUrl = `https://github.com/${issueOrg}/${issueRepo}/issues/${parsedNumber}`;
+                [ org, repo, number, title, url, urlOverride ] = [ issueOrg, issueRepo, parsedNumber, project_view_name, issueUrl, issueUrl ];
+                [ project_number, project_name, project_view_name ] = [ null, null, null ];
+            }
+        }
     }
 
-    return parseLinkFormats(linkFormats, { org, repo, number, author, title, url, origin, hostname, pathname, hash, codepath, codefile, codebranch, commit_long, commit_short, project_number, project_name, project_view_name });
+    return {
+        links: parseLinkFormats(linkFormats, { org, repo, number, author, title, url, origin, hostname, pathname, hash, codepath, codefile, codebranch, commit_long, commit_short, project_number, project_name, project_view_name }),
+        urlOverride
+    };
 }
