@@ -52,11 +52,11 @@ async function tabLoaded(tab) {
             target: { tabId: tab.id },
             func: getGitHubLinks,
             args: [currentOptions, tab]
-        }).then(([{result: links}]) => {
+        }).then(([{result: { links, urlOverride }}]) => {
             chrome.scripting.executeScript({
                 target: { tabId: tab.id },
                 func: addLinksToPage,
-                args: [currentOptions, links]
+                args: [ currentOptions, links, urlOverride ]
             });
         });
     }

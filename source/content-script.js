@@ -1,7 +1,10 @@
 function copyLinkToClipboard({ url, text }) {
     const overrideCopyCommand = (event) => {
         event.clipboardData.setData('text/plain', text);
-        event.clipboardData.setData('text/html', `<a href='${url}'>${text}</a>`);
+
+        if (!!url) {
+            event.clipboardData.setData('text/html', `<a href='${url}'>${text}</a>`);
+        }
 
         event.preventDefault();
     };
