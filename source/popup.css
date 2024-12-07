@@ -16,6 +16,7 @@ body {
 
 .options-container {
   float: right;
+  margin-top: 8px;
 }
 
 h1 {
@@ -28,6 +29,10 @@ h2 {
   margin-bottom: 8px;
   font-size: 1.1em;
   font-weight: normal;
+}
+
+.copy-github-link-format-container {
+  margin-right: 8px;
 }
 
 h2 a, h2 a:active, h2 a:visited {

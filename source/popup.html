@@ -7,7 +7,15 @@
         <link rel="stylesheet" href="content-styles.css" />
     </head>
     <body>
-        <div class="options-container"><a id="options-link" href='#'>Options</a></div>
+        <div class="options-container">
+            <span class="copy-github-link-format-container">
+                <input type="radio" name="copy-github-link-format" id="copy-github-link-format-html" value="html" checked="checked" />
+                <label for="copy-github-link-format-html">Rich Text</label>
+                <input type="radio" name="copy-github-link-format" id="copy-github-link-format-markdown" value="markdown" />
+                <label for="copy-github-link-format-markdown">Markdown</label>
+            </span>
+            <a id="options-link" href='#'>Options</a>
+        </div>
         <h1>Copy GitHub Link</h1>
         <h2 id="link-target"></h2>
         <div id="links"></div>
