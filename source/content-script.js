@@ -1,9 +1,19 @@
-function copyLinkToClipboard({ url, text }) {
+function copyLinkToClipboard({ url, text, format }) {
     const overrideCopyCommand = (event) => {
-        event.clipboardData.setData('text/plain', text);
+        switch (format) {
+            case 'html':
+                event.clipboardData.setData('text/plain', text);
+                event.clipboardData.setData('text/html', `<a href='${url}'>${text}</a>`);
+                break;
 
-        if (!!url) {
-            event.clipboardData.setData('text/html', `<a href='${url}'>${text}</a>`);
+            case 'markdown':
+                event.clipboardData.setData('text/plain', `[${text}](${url})`);
+                event.clipboardData.setData('text/html', `<a href='${url}'>${text}</a>`);
+                break;
+
+            case 'text':
+                event.clipboardData.setData('text/plain', text);
+                break;
         }
 
         event.preventDefault();

@@ -2,12 +2,22 @@ export default function addLinksToPage(options, links, urlOverride, previousDela
     const url = urlOverride || location.href;
     const optionsUrl = chrome.runtime.getURL('options.html');
 
-    function copyLinkToClipboard({ url, text }) {
+    function copyLinkToClipboard({ url, text, format }) {
         const overrideCopyCommand = (event) => {
-            event.clipboardData.setData('text/plain', text);
+            switch (format) {
+                case 'html':
+                    event.clipboardData.setData('text/plain', text);
+                    event.clipboardData.setData('text/html', `<a href='${url}'>${text}</a>`);
+                    break;
 
-            if (!!url) {
-                event.clipboardData.setData('text/html', `<a href='${url}'>${text}</a>`);
+                case 'markdown':
+                    event.clipboardData.setData('text/plain', `[${text}](${url})`);
+                    event.clipboardData.setData('text/html', `<a href='${url}'>${text}</a>`);
+                    break;
+
+                case 'text':
+                    event.clipboardData.setData('text/plain', text);
+                    break;
             }
 
             event.preventDefault();
@@ -122,6 +132,38 @@ export default function addLinksToPage(options, links, urlOverride, previousDela
                                     linkPopupOptionsGearSvg.appendChild(linkPopupOptionsGearPath);
                                 linkPopupOptionsAnchor.appendChild(linkPopupOptionsGearSvg);
                             linkPopupTitle.appendChild(linkPopupOptionsAnchor);
+
+                            const linkPopupFormatSpan = document.createElement('span');
+                            linkPopupFormatSpan.className = 'float-right mr-2';
+                                const linkPopupFormatHtmlRadio = document.createElement('input');
+                                linkPopupFormatHtmlRadio.type = 'radio';
+                                linkPopupFormatHtmlRadio.name = `copy-github-link-format-${id}`;
+                                linkPopupFormatHtmlRadio.id = `copy-github-link-format-html-${id}`;
+                                linkPopupFormatHtmlRadio.value = 'html';
+                                linkPopupFormatHtmlRadio.checked = true;
+                                linkPopupFormatHtmlRadio.className = 'mr-1';
+                                linkPopupFormatSpan.appendChild(linkPopupFormatHtmlRadio);
+
+                                const linkPopupFormatHtmlLabel = document.createElement('label');
+                                linkPopupFormatHtmlLabel.htmlFor = `copy-github-link-format-html-${id}`;
+                                linkPopupFormatHtmlLabel.innerText = 'Rich Text';
+                                linkPopupFormatHtmlLabel.className = 'mr-2';
+                                linkPopupFormatSpan.appendChild(linkPopupFormatHtmlLabel);
+
+                                const linkPopupFormatMarkdownRadio = document.createElement('input');
+                                linkPopupFormatMarkdownRadio.type = 'radio';
+                                linkPopupFormatMarkdownRadio.name = `copy-github-link-format-${id}`;
+                                linkPopupFormatMarkdownRadio.id = `copy-github-link-format-markdown-${id}`;
+                                linkPopupFormatMarkdownRadio.value = 'markdown';
+                                linkPopupFormatMarkdownRadio.className = 'mr-1';
+                                linkPopupFormatSpan.appendChild(linkPopupFormatMarkdownRadio);
+
+                                const linkPopupFormatMarkdownLabel = document.createElement('label');
+                                linkPopupFormatMarkdownLabel.htmlFor = `copy-github-link-format-markdown-${id}`;
+                                linkPopupFormatMarkdownLabel.innerText = 'Markdown';
+                                linkPopupFormatMarkdownLabel.className = 'mr-2';
+                                linkPopupFormatSpan.appendChild(linkPopupFormatMarkdownLabel);
+                            linkPopupTitle.appendChild(linkPopupFormatSpan);
                         linkPopupBodyContent.appendChild(linkPopupTitle);
 
                         const linkPopupSubtitle = document.createElement('h5');
@@ -184,7 +226,8 @@ export default function addLinksToPage(options, links, urlOverride, previousDela
                                     anchor.href = linkUrl;
                                     anchor.title = `Click to copy this link to the clipboard.${(isDefault ? ' This is the default format.' : '')}\n\nText:\n${text}\n\nURL:\n${linkUrl}`;
                                     anchor.onclick = event => {
-                                        copyLinkToClipboard({ url: linkUrl, text });
+                                        const format = [...document.querySelectorAll(`input[type='radio'][name='copy-github-link-format-${id}']`)].sort((l, r) => l.checked ? -1 : (r.checked ? 1 : 0))[0].value;
+                                        copyLinkToClipboard({ url: linkUrl, text, format });
                                         anchor.className = 'copy-github-link-clicked';
 
                                         window.setTimeout(() => anchor.className = null, 250);

@@ -38,7 +38,7 @@ chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
     headerAnchor.title = `Click to copy this URL to the clipboard as plain text.\n\n${headerUrl}`
 
     headerAnchor.onclick = event => {
-        chrome.tabs.sendMessage(id, { type: 'copyLink', text: headerUrl });
+        chrome.tabs.sendMessage(id, { type: 'copyLink', text: headerUrl, url: headerUrl, format: 'text' });
 
         headerAnchor.className = 'copy-github-link-clicked';
         window.setTimeout(() => headerAnchor.className = null, 250);
@@ -100,7 +100,8 @@ chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
             anchor.title = `Click to copy this link to the clipboard.${(isDefault ? ' This is the default format.' : '')}\n\nText:\n${text}\n\nURL:\n${linkUrl}`
 
             anchor.onclick = event => {
-                chrome.tabs.sendMessage(id, { type: 'copyLink', url: linkUrl, text });
+                const format = [...document.querySelectorAll(`input[type='radio'][name='copy-github-link-format']`)].sort((l, r) => l.checked ? -1 : (r.checked ? 1 : 0))[0].value;
+                chrome.tabs.sendMessage(id, { type: 'copyLink', url: linkUrl, text, format });
 
                 anchor.className = 'copy-github-link-clicked';
                 window.setTimeout(() => anchor.className = null, 250);
