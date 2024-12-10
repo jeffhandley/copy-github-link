@@ -5,11 +5,6 @@ export default function addLinksToPage(options, links, urlOverride, previousDela
     function copyLinkToClipboard({ url, text, format }) {
         const overrideCopyCommand = (event) => {
             switch (format) {
-                case 'html':
-                    event.clipboardData.setData('text/plain', text);
-                    event.clipboardData.setData('text/html', `<a href='${url}'>${text}</a>`);
-                    break;
-
                 case 'markdown':
                     event.clipboardData.setData('text/plain', `[${text}](${url})`);
                     event.clipboardData.setData('text/html', `<a href='${url}'>${text}</a>`);
@@ -18,6 +13,13 @@ export default function addLinksToPage(options, links, urlOverride, previousDela
                 case 'text':
                     event.clipboardData.setData('text/plain', text);
                     break;
+
+                case 'html':
+                default:
+                    event.clipboardData.setData('text/plain', text);
+                    event.clipboardData.setData('text/html', `<a href='${url}'>${text}</a>`);
+                    break;
+
             }
 
             event.preventDefault();
@@ -43,7 +45,11 @@ export default function addLinksToPage(options, links, urlOverride, previousDela
             buttonGroupDefaultLink.setAttribute('title', `Click to copy this link to the clipboard.\n\nText:\n${defaultLink.text}\n\nURL:\n${(defaultLink.urlOverride || url)}`);
 
             buttonGroupDefaultLink.onclick = event => {
-                copyLinkToClipboard({ url: defaultLink.urlOverride || url, text: defaultLink.text });
+                copyLinkToClipboard({
+                    url: defaultLink.urlOverride || url,
+                    text: defaultLink.text,
+                    format: 'html'
+                });
 
                 const classNameRestore = buttonGroupDefaultLink.className;
                 buttonGroupDefaultLink.className += ' btn-primary';
@@ -172,7 +178,7 @@ export default function addLinksToPage(options, links, urlOverride, previousDela
                             linkPopupSubtitleAnchor.href = '#';
                             linkPopupSubtitleAnchor.title = `Click to copy this URL to the clipboard as plain text.\n\n${url}`;
                             linkPopupSubtitleAnchor.onclick = event => {
-                                copyLinkToClipboard({ text: url });
+                                copyLinkToClipboard({ text: url, format: 'text' });
                                 linkPopupSubtitleAnchor.className = 'copy-github-link-clicked';
 
                                 window.setTimeout(() => linkPopupSubtitleAnchor.className = null, 250);
