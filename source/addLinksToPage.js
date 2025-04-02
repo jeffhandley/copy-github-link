@@ -146,7 +146,7 @@ export default function addLinksToPage(options, links, urlOverride, previousDela
                                 linkPopupFormatHtmlRadio.name = `copy-github-link-format-${id}`;
                                 linkPopupFormatHtmlRadio.id = `copy-github-link-format-html-${id}`;
                                 linkPopupFormatHtmlRadio.value = 'html';
-                                linkPopupFormatHtmlRadio.checked = true;
+                                linkPopupFormatHtmlRadio.checked = (options.defaultCopyFormat == 'html');
                                 linkPopupFormatHtmlRadio.className = 'mr-1';
                                 linkPopupFormatSpan.appendChild(linkPopupFormatHtmlRadio);
 
@@ -161,6 +161,7 @@ export default function addLinksToPage(options, links, urlOverride, previousDela
                                 linkPopupFormatMarkdownRadio.name = `copy-github-link-format-${id}`;
                                 linkPopupFormatMarkdownRadio.id = `copy-github-link-format-markdown-${id}`;
                                 linkPopupFormatMarkdownRadio.value = 'markdown';
+                                linkPopupFormatMarkdownRadio.checked = (options.defaultCopyFormat == 'markdown');
                                 linkPopupFormatMarkdownRadio.className = 'mr-1';
                                 linkPopupFormatSpan.appendChild(linkPopupFormatMarkdownRadio);
 

@@ -5,9 +5,14 @@ import getGitHubLinks from './getGitHubLinks.js';
 let currentOptions = {...defaultOptions};
 
 function loadOptionsFromStorage() {
-    chrome.storage.sync.get(defaultOptions, loadedOptions => currentOptions = {
-        ...currentOptions,
-        ...loadedOptions
+    chrome.storage.sync.get(defaultOptions, loadedOptions => {
+        currentOptions = {
+            ...currentOptions,
+            ...loadedOptions
+        };
+
+        document.getElementById('copy-github-link-format-html').checked = (currentOptions.defaultCopyFormat == 'html');
+        document.getElementById('copy-github-link-format-markdown').checked = (currentOptions.defaultCopyFormat == 'markdown');
     });
 }
 

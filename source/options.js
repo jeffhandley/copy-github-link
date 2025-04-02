@@ -3,6 +3,9 @@ import defaultOptions from './defaultOptions.js';
 const logoImage = document.getElementById('logo');
 logoImage.src = chrome.runtime.getURL('images/icon-32-enabled.png');
 
+const formatHtml = document.getElementById('copy-github-link-format-html');
+const formatMarkdown = document.getElementById('copy-github-link-format-markdown');
+
 const disableAppHeaderElement = document.getElementById('disable-app-header');
 const disableRepoHeaderElement = document.getElementById('disable-repo-header');
 const disablePullRequestIssueElement = document.getElementById('disable-pullrequest-issue');
@@ -29,7 +32,11 @@ function convertLinkFormatsToText(linkFormats) {
     ) + '\n]\n';
 }
 
-function renderOptions({disableAppHeaderButton, disableRepoHeaderButton, disablePullRequestIssueButton, linkFormats}) {
+function renderOptions(options) {
+    let {defaultCopyFormat, disableAppHeaderButton, disableRepoHeaderButton, disablePullRequestIssueButton, linkFormats} = options;
+
+    formatHtml.checked = (defaultCopyFormat == 'html');
+    formatMarkdown.checked = (defaultCopyFormat == 'markdown');
     disableAppHeaderElement.checked = disableAppHeaderButton;
     disableRepoHeaderElement.checked = disableRepoHeaderButton;
     disablePullRequestIssueElement.checked = disablePullRequestIssueButton;
@@ -41,15 +48,15 @@ function saveOptionsToStorage() {
     try {
         const linkFormats = JSON.parse(linkFormatsTextArea.value);
 
-        chrome.storage.sync.set(
-            {
-                disableAppHeaderButton: !!disableAppHeaderElement.checked,
-                disableRepoHeaderButton: !!disableRepoHeaderElement.checked,
-                disablePullRequestIssueButton: !!disablePullRequestIssueElement.checked,
-                linkFormats
-            },
-            () => showStatus('Options saved', 1500)
-        );
+        const options = {
+            defaultCopyFormat: formatMarkdown.checked ? 'markdown' : 'html',
+            disableAppHeaderButton: !!disableAppHeaderElement.checked,
+            disableRepoHeaderButton: !!disableRepoHeaderElement.checked,
+            disablePullRequestIssueButton: !!disablePullRequestIssueElement.checked,
+            linkFormats
+        };
+
+        chrome.storage.sync.set(options, () => showStatus('Options saved', 1500));
     }
     catch (error) {
         showStatus(error, 10000);
