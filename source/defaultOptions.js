@@ -1,4 +1,5 @@
 export default {
+    defaultCopyFormat: 'html',
     disableAppHeaderButton: false,
     disablePullRequestIssueButton: false,
     disableRepoHeaderButton: false,

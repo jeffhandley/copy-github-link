@@ -24,7 +24,16 @@
 
         <div>
             <fieldset>
-                <legend>Display Options</legend>
+                <legend>Options</legend>
+
+                Choose which clipboard content type to use by default:
+
+                <div>
+                    <input type="radio" name="copy-github-link-format" id="copy-github-link-format-html" value="html" />
+                    <label for="copy-github-link-format-html">Rich Text</label>
+                    <input type="radio" name="copy-github-link-format" id="copy-github-link-format-markdown" value="markdown" />
+                    <label for="copy-github-link-format-markdown">Markdown</label>
+                </div>
 
                 The extension can add buttons to three places on GitHub.com: the site-wide app header, the repository page header, and the pull request/issue/discussion page header. These options allow disabling any of those buttons. Regardless of these settings, the extension's toolbar icon will always open a popup with the links for the current page.
 
