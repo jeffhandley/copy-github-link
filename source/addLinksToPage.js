@@ -287,27 +287,24 @@ export default function addLinksToPage(options, links, urlOverride, previousDela
         }
     }
 
-    const appHeader = document.querySelector('.AppHeader-actions');
+    const appHeader = document.querySelector('div[data-testid="top-bar-actions"]');
 
     if (appHeader) {
         renderLinkButton(appHeader, 'div', options.disableAppHeaderButton, 'appheader', false, '', 'pl-2 pr-2');
     }
 
-    // With the new Issue Types (https://github.blog/changelog/2024-10-01-evolving-github-issues-public-preview/),
-    // the action block no longer has a unique class name, so search for it by `data-component` tag,
-    // but fall back to the older approach for repos that don't have types enabled.
-    const newHeaderOuterDiv = document.querySelector('[data-component="PH_Actions"]');
-    const newActionHeader = newHeaderOuterDiv ? newHeaderOuterDiv.firstElementChild : null;
+    // Issues and pull requests use different structures for the page header actions
+    // Pull requests have an extra element between the header container and the button container
+    // but for both, we can find the first button and use its parent element.
+    const headerContainer = document.querySelector('[data-component="PH_Actions"]');
+    const headerFirstButton = headerContainer?.querySelector('button');
+    const headerButtonContainer = headerFirstButton?.parentElement;
 
-    const [oldStyleActionHeader] = [...document.getElementsByClassName('gh-header-actions')];
+    // Use the small button style for pull requests (when the button container is not the header container's first child)
+    const buttonClass = headerContainer.firstElementChild == headerButtonContainer ? '' : 'btn-sm';
 
-    // The new Issue Types UI no longer uses `btn-sm` style on the buttons
-    const buttonClass = !!newActionHeader ? '' : 'btn-sm';
-
-    const pullRequestOrIssueHeader = newActionHeader || oldStyleActionHeader;
-
-    if (pullRequestOrIssueHeader) {
-        renderLinkButton(pullRequestOrIssueHeader, 'div', options.disablePullRequestIssueButton, 'pullorissue', true, buttonClass);
+    if (headerButtonContainer) {
+        renderLinkButton(headerButtonContainer, 'div', options.disablePullRequestIssueButton, 'pullorissue', true, buttonClass);
     } else if (!!urlOverride) {
         // When there's a urlOverride, we might be loading in a project pane
         // This could have a delayed rendering of the issue pane, so we will
