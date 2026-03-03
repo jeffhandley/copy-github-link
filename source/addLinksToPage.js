@@ -257,7 +257,7 @@ export default function addLinksToPage(options, links, urlOverride, previousDela
         return buttonGroup;
     }
 
-    function renderLinkButton(header, elementType, optionDisabled, popupId, includeTextLabel, buttonClass, linkClass) {
+    function renderLinkButton(header, elementType, optionDisabled, popupId, includeTextLabel, buttonClass, linkClass, insertBeforeRef) {
         const existing = document.getElementById(popupId);
 
         const popupLinks = [...links]
@@ -266,7 +266,7 @@ export default function addLinksToPage(options, links, urlOverride, previousDela
 
         if (optionDisabled || !popupLinks.length) {
             if (existing) {
-                header.removeChild(existing);
+                existing.remove();
             }
 
             return;
@@ -280,11 +280,10 @@ export default function addLinksToPage(options, links, urlOverride, previousDela
         linkContainer.appendChild(linkButton);
 
         if (existing) {
-            header.replaceChild(linkContainer, existing);
+            existing.remove();
         }
-        else {
-            header.insertBefore(linkContainer, header.firstChild);
-        }
+
+        header.insertBefore(linkContainer, insertBeforeRef || header.firstChild);
     }
 
     const appHeader = document.querySelector('div[data-testid="top-bar-actions"]');
@@ -293,19 +292,33 @@ export default function addLinksToPage(options, links, urlOverride, previousDela
         renderLinkButton(appHeader, 'div', options.disableAppHeaderButton, 'appheader', false, '', 'pl-2 pr-2');
     }
 
-    // Issues and pull requests use different structures for the page header actions
-    // Pull requests have an extra element between the header container and the button container
-    // but for both, we can find the first button and use its parent element.
-    const headerContainer = document.querySelector('[data-component="PH_Actions"]');
+    // Issues and pull requests have a page header with action buttons.
+    // New experience uses PH_Actions; classic experience uses gh-header-actions.
+    const headerContainer = document.querySelector('[data-component="PH_Actions"]')
+        || document.querySelector('.gh-header-actions');
+
+    // On issue pages, action buttons are inside a menuActionsContainer within PH_Actions.
+    // Insert into that container so the Link button appears next to Edit.
+    const menuActionsContainer = headerContainer?.querySelector(':scope > [class*="menuActionsContainer"]');
+    const insertionTarget = menuActionsContainer || headerContainer;
+
+    // Use the small button style when the header has nested button containers (pull requests)
     const headerFirstButton = headerContainer?.querySelector('button');
     const headerButtonContainer = headerFirstButton?.parentElement;
+    const buttonClass = headerContainer?.firstElementChild == headerButtonContainer ? '' : 'btn-sm';
 
-    // Use the small button style for pull requests (when the button container is not the header container's first child)
-    const buttonClass = headerContainer.firstElementChild == headerButtonContainer ? '' : 'btn-sm';
+    if (insertionTarget) {
+        renderLinkButton(insertionTarget, 'div', options.disablePullRequestIssueButton, 'pullorissue', true, buttonClass, '');
 
-    if (headerButtonContainer) {
-        renderLinkButton(headerButtonContainer, 'div', options.disablePullRequestIssueButton, 'pullorissue', true, buttonClass);
-    } else if (!!urlOverride) {
+        // For classic PR experience, match the flex ordering of the Edit/Code buttons
+        // so the link button appears next to them instead of at the start of the header.
+        // Only apply when sibling elements use flex ordering (PRs do, discussions don't).
+        const pullorissueContainer = document.getElementById('pullorissue');
+        if (pullorissueContainer && headerContainer?.classList.contains('gh-header-actions')
+            && headerContainer.querySelector('.flex-md-order-2')) {
+            pullorissueContainer.classList.add('flex-md-order-2');
+        }
+    }else if (!!urlOverride) {
         // When there's a urlOverride, we might be loading in a project pane
         // This could have a delayed rendering of the issue pane, so we will
         // use a backoff strategy for retries
@@ -316,6 +329,6 @@ export default function addLinksToPage(options, links, urlOverride, previousDela
     const [pageHeadActions] = [...document.getElementsByClassName('pagehead-actions')];
 
     if (pageHeadActions) {
-        renderLinkButton(pageHeadActions, 'li', options.disableRepoHeaderButton, 'repoheader', true, buttonClass);
+        renderLinkButton(pageHeadActions, 'li', options.disableRepoHeaderButton, 'repoheader', true, 'btn-sm');
     }
 }

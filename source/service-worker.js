@@ -51,7 +51,7 @@ async function tabLoaded(tab) {
         chrome.scripting.executeScript({
             target: { tabId: tab.id },
             func: getGitHubLinks,
-            args: [currentOptions, tab]
+            args: [currentOptions, { url: tab.url }]
         }).then(([{result: { links, urlOverride }}]) => {
             chrome.scripting.executeScript({
                 target: { tabId: tab.id },
@@ -66,8 +66,14 @@ async function tabLoaded(tab) {
 }
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    if (changeInfo.status === 'complete' || changeInfo.url || changeInfo.title) {
+    if (changeInfo.status === 'complete' || changeInfo.title) {
         tabLoaded(tab);
+    }
+});
+
+chrome.runtime.onMessage.addListener((message, sender) => {
+    if (message.type === 'renderLinks' && sender.tab) {
+        tabLoaded(sender.tab);
     }
 });
 
