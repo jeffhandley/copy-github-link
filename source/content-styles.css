@@ -7,10 +7,6 @@ h5 {
     z-index: unset;
 }
 
-.copy-github-link-container a.BtnGroup-item, .copy-github-link-container summary.BtnGroup-item {
-    background: transparent;
-}
-
 .copy-github-link-container div.dropdown-menu {
     top:6px;
     width: max-content;

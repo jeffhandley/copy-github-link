@@ -1,4 +1,10 @@
 export default function getGitHubLinks({linkFormats}, { url, title }) {
+    // When executed in the page context (via chrome.scripting.executeScript),
+    // prefer the live document.title over the potentially stale tab.title
+    if (!title && typeof document !== 'undefined') {
+        title = document.title;
+    }
+
     function parseLinkFormats(linkFormats, { org, repo, number, author, title, url, origin, hostname, pathname, hash, codepath, codefile, codebranch, commit_long, commit_short, project_number, project_name, project_view_name }) {
         return linkFormats.reduce((enabledItems, item) => {
             // Skip over blank entries used for pretty formatting
@@ -187,33 +193,52 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
         isCommit = appRoute === 'commit' && appPathRoot;
 
         if (isPullOrIssueOrDiscussion) {
-            // Strip the number and repo information from the page title
-            const titleParts = title.split(' · ');
-            titleParts.reverse();
+            // Try to get the title directly from the DOM header, which is more
+            // reliable than document.title during client-side navigation since
+            // GitHub may not update the page title during turbo/SPA routing.
+            const domTitle = typeof document !== 'undefined' && (
+                document.querySelector('h1[data-component="PH_Title"] .markdown-title')?.textContent?.trim() ||
+                document.querySelector('h1.gh-header-title .markdown-title')?.textContent?.trim()
+            );
 
-            // When not signed in, some titles are suffixed with a 'GitHub' segment
-            if (titleParts[0] === 'GitHub') {
-                titleParts.shift();
-            }
+            if (domTitle) {
+                title = domTitle;
 
-            const [ /* repo */, /* number */, ...remainingTitleParts ] = titleParts;
-            remainingTitleParts.reverse();
+                // Try to extract author from the PR header summary
+                if (isPull) {
+                    const summaryContainer = document.querySelector('[class*="summaryContainer"]');
+                    const authorLink = summaryContainer?.querySelector('a[data-hovercard-type="user"]');
+                    author = authorLink?.textContent?.trim() || '';
+                }
+            } else {
+                // Fall back to parsing document.title
+                const titleParts = title.split(' · ');
+                titleParts.reverse();
 
-            title = remainingTitleParts.join(' · ');
+                // When not signed in, some titles are suffixed with a 'GitHub' segment
+                if (titleParts[0] === 'GitHub') {
+                    titleParts.shift();
+                }
 
-            // Remove the author from pull request titles
-            if (isPull) {
-                const titleWords = title.split(' ');
-                titleWords.reverse();
+                const [ /* repo */, /* number */, ...remainingTitleParts ] = titleParts;
+                remainingTitleParts.reverse();
 
-                const [ authorPart, by, ...remainingTitleWords ] = titleWords;
+                title = remainingTitleParts.join(' · ');
 
-                // If the words matched the expected pattern, set the values
-                if (authorPart && by === 'by') {
-                    remainingTitleWords.reverse();
+                // Remove the author from pull request titles
+                if (isPull) {
+                    const titleWords = title.split(' ');
+                    titleWords.reverse();
 
-                    title = remainingTitleWords.join(' ');
-                    author = authorPart;
+                    const [ authorPart, by, ...remainingTitleWords ] = titleWords;
+
+                    // If the words matched the expected pattern, set the values
+                    if (authorPart && by === 'by') {
+                        remainingTitleWords.reverse();
+
+                        title = remainingTitleWords.join(' ');
+                        author = authorPart;
+                    }
                 }
             }
         }
