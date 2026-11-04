@@ -5,7 +5,7 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
         title = document.title;
     }
 
-    function parseLinkFormats(linkFormats, { org, repo, number, author, title, url, origin, hostname, pathname, hash, codepath, codefile, codebranch, commit_long, commit_short, project_number, project_name, project_view_name }) {
+    function parseLinkFormats(linkFormats, { org, repo, number, author, title, url, origin, hostname, pathname, hash, codepath, codefile, codebranch, commit_long, commit_short, project_number, project_name, project_view_name, stack_number }) {
         return linkFormats.reduce((enabledItems, item) => {
             // Skip over blank entries used for pretty formatting
             if (!item) return enabledItems;
@@ -62,6 +62,7 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
                     case '{project_number}': return (!!project_number);
                     case '{project_view_name}': return (!!project_view_name);
                     case '{project_view_number}': return (!!project_view_number);
+                    case '{stack_number}': return (!!stack_number);
                     default: return true;
                 }
             }, true);
@@ -91,6 +92,7 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
                     case '{project_number}': return (!!project_number);
                     case '{project_view_name}': return (!!project_view_name);
                     case '{project_view_number}': return (!!project_view_number);
+                    case '{stack_number}': return (!!stack_number);
                     default: return false;
                 }
             }, false);
@@ -138,6 +140,7 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
                 .replace('{project_number}', project_number)
                 .replace('{project_view_name}', project_view_name)
                 .replace('{project_view_number}', project_view_number)
+                .replace('{stack_number}', stack_number)
                 .trim();
 
             let linkText = replaceTokens(format);
@@ -172,6 +175,7 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
     let isCodePath = false, codepath = null, codefile = null, codebranch = null;;
     let isCommit = false, commit_long = null, commit_short = null;
     let isProject = false, project_number = null, project_name = null, project_view_number, project_view_name = null;
+    let stack_number = null;
 
     if (org === 'orgs' && !!repo && pathSegments.length >= 1) {
         org = repo;
@@ -188,6 +192,7 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
 
         isPullOrIssueOrDiscussion = isPull || isIssue || isDiscussion;
         number = isPullOrIssueOrDiscussion ? parsedNumber : null;
+        stack_number = appRoute === 'stack' && !Number.isNaN(parsedNumber) ? parsedNumber : null;
 
         isCodePath = (appRoute === 'blob' || appRoute === 'tree') && appPathRoot;
         isCommit = appRoute === 'commit' && appPathRoot;
@@ -324,7 +329,7 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
     }
 
     return {
-        links: parseLinkFormats(linkFormats, { org, repo, number, author, title, url, origin, hostname, pathname, hash, codepath, codefile, codebranch, commit_long, commit_short, project_number, project_name, project_view_name }),
+        links: parseLinkFormats(linkFormats, { org, repo, number, author, title, url, origin, hostname, pathname, hash, codepath, codefile, codebranch, commit_long, commit_short, project_number, project_name, project_view_name, stack_number }),
         urlOverride
     };
 }
