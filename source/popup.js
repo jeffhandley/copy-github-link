@@ -28,13 +28,29 @@ optionsLink.addEventListener('click', (event) => {
     event.preventDefault();
 });
 
-chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
+// Run getGitHubLinks inside the page so it can read the DOM (title, author, PR status).
+// Falls back to running it here (from the tab title only) if injection fails.
+async function getLinksForTab({ id, url, title }) {
+    try {
+        const [{ result }] = await chrome.scripting.executeScript({
+            target: { tabId: id },
+            func: getGitHubLinks,
+            args: [currentOptions, { url }]
+        });
+        if (result) return result;
+    }
+    catch (error) { /* fall through */ }
+
+    return getGitHubLinks(currentOptions, { url, title });
+}
+
+chrome.tabs.query({ active: true, currentWindow: true }, async ([tab]) => {
     if (!isGitHub(tab)) return;
 
     const {id, url, title} = tab;
     while (linksElement.firstChild) linksElement.removeChild(linksElement.firstChild);
 
-    const { links, urlOverride } = getGitHubLinks(currentOptions, {url, title});
+    const { links, urlOverride } = await getLinksForTab(tab);
 
     const headerAnchor = document.createElement('a');
     const headerUrl = urlOverride || url;

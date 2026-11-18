@@ -39,6 +39,15 @@ The extension comes with over 40 default link formats available, including these
 
 The `{title}` token removes the " by {author} · Pull Request #{number} · {org}/{repo}" suffix from GitHub's page title, and it also sanitizes the page title when viewing a code file or folder.
 
+The `{status}` token is available on pull request pages and reads the pull request's state from the page header. It produces one of `open`, `draft`, `queue` (in the merge queue), `merged`, or `closed`, which makes it easy to pair links with status-specific text or emoji. For example, with custom emoji named `:gh-pr-open:`, `:gh-pr-merged:`, etc.:
+
+```json
+["<default> :gh-pr-{status}: {title} (#{number})","{org}{repo}"],
+["<default> {title} (#{number})","{org}{repo}"]
+```
+
+Like other tokens, a format using `{status}` is only shown when the status could be determined, so a fallback format can follow it; the first visible `<default>` format is used as the default.
+
 ## Usage, Demo, and Screenshots
 
 The extension enables itself on GitHub.com pages, and clicking the extension's icon in the toolbar opens the popup to copy a GitHub link. Clicking any of the links will copy that formatted link to the clipboard. When pasting from the clipboard, applications that accept rich text will paste the formatted link with the target URL pointing to the current page. Applications that receive only plain text will paste in the formatted text without it being a link. _Note that many applications support `Ctrl`+`Shift`+`V` (or `Cmd`+`Shift`+`V`) to paste as plain text._
