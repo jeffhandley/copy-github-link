@@ -39,6 +39,23 @@ The extension comes with over 40 default link formats available, including these
 
 The `{title}` token removes the " by {author} · Pull Request #{number} · {org}/{repo}" suffix from GitHub's page title, and it also sanitizes the page title when viewing a code file or folder.
 
+The `{status}` token is available on pull request pages. It reads the pull request's state from the page header and produces one of a fixed set of values:
+
+| `{status}` | Pull request state |
+| --- | --- |
+| `open` | Open and ready for review |
+| `draft` | Draft |
+| `queue` | Queued in the merge queue |
+| `merged` | Merged |
+| `closed` | Closed without merging |
+
+Because the values are fixed, `{status}` can be used to build status-specific text, for example `[{status}] {title} (#{number})`. Like other tokens, a format that uses `{status}` is only shown when the status can be determined, so follow it with a fallback format. The first visible `<default>` format is used as the default:
+
+```json
+["<default> [{status}] {title} (#{number})","{org}{repo}"],
+["<default> {title} (#{number})","{org}{repo}"]
+```
+
 ## Usage, Demo, and Screenshots
 
 The extension enables itself on GitHub.com pages, and clicking the extension's icon in the toolbar opens the popup to copy a GitHub link. Clicking any of the links will copy that formatted link to the clipboard. When pasting from the clipboard, applications that accept rich text will paste the formatted link with the target URL pointing to the current page. Applications that receive only plain text will paste in the formatted text without it being a link. _Note that many applications support `Ctrl`+`Shift`+`V` (or `Cmd`+`Shift`+`V`) to paste as plain text._

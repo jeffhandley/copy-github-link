@@ -5,7 +5,7 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
         title = document.title;
     }
 
-    function parseLinkFormats(linkFormats, { org, repo, number, author, title, url, origin, hostname, pathname, hash, codepath, codefile, codebranch, commit_long, commit_short, project_number, project_name, project_view_name }) {
+    function parseLinkFormats(linkFormats, { org, repo, number, author, title, url, origin, hostname, pathname, hash, codepath, codefile, codebranch, commit_long, commit_short, project_number, project_name, project_view_name, status }) {
         return linkFormats.reduce((enabledItems, item) => {
             // Skip over blank entries used for pretty formatting
             if (!item) return enabledItems;
@@ -62,6 +62,7 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
                     case '{project_number}': return (!!project_number);
                     case '{project_view_name}': return (!!project_view_name);
                     case '{project_view_number}': return (!!project_view_number);
+                    case '{status}': return (!!status);
                     default: return true;
                 }
             }, true);
@@ -91,6 +92,7 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
                     case '{project_number}': return (!!project_number);
                     case '{project_view_name}': return (!!project_view_name);
                     case '{project_view_number}': return (!!project_view_number);
+                    case '{status}': return (!!status);
                     default: return false;
                 }
             }, false);
@@ -138,6 +140,7 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
                 .replace('{project_number}', project_number)
                 .replace('{project_view_name}', project_view_name)
                 .replace('{project_view_number}', project_view_number)
+                .replace('{status}', status)
                 .trim();
 
             let linkText = replaceTokens(format);
@@ -162,13 +165,59 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
         }, []);
     }
 
+    // Reads the pull request's state label from the page header.
+    // Returns one of: open, draft, queue, merged, closed (or null when unknown,
+    // e.g. when not running in the page context).
+    function detectPullStatus() {
+        if (typeof document === 'undefined' || !document.querySelectorAll) return null;
+
+        // Primer StateLabel data-status values used for pull requests
+        const byDataStatus = {
+            pullopened: 'open',
+            pullclosed: 'closed',
+            pullmerged: 'merged',
+            pullqueued: 'queue',
+            draft: 'draft',
+        };
+
+        const classify = label => {
+            const dataStatus = (label.getAttribute('data-status') || '').toLowerCase();
+            if (dataStatus) return byDataStatus[dataStatus] || null;
+
+            // Classic (non-React) header: <span class="State" title="Status: Merged">
+            const raw = [label.getAttribute('title'), label.textContent].filter(Boolean).join(' ').toLowerCase();
+            if (raw.includes('merged')) return 'merged';
+            if (raw.includes('queue')) return 'queue';
+            if (raw.includes('draft')) return 'draft';
+            if (raw.includes('closed')) return 'closed';
+            if (raw.includes('open')) return 'open';
+            return null;
+        };
+
+        // Header labels come before any timeline labels in document order
+        const candidates = document.querySelectorAll([
+            '[data-testid="header-state"]',
+            '[data-component="PH_LeadingVisual"] [data-component="StateLabel"]',
+            '[data-component="StateLabel"][data-status]',
+            '#partial-discussion-header .State',
+            '.gh-header-meta .State',
+        ].join(', '));
+
+        for (const label of candidates) {
+            const status = classify(label);
+            if (status) return status;
+        }
+
+        return null;
+    }
+
     let { origin, hostname, pathname, hash, searchParams } = new URL(url);
     if (pathname.length > 1) pathname = pathname.substring(1);
 
     let [org, repo, ...pathSegments ] = pathname.split('/');
     let urlOverride = null;
 
-    let isPull = false, isIssue = false, isDiscussion = false, isPullOrIssueOrDiscussion = false, number = null, author = null;
+    let isPull = false, isIssue = false, isDiscussion = false, isPullOrIssueOrDiscussion = false, number = null, author = null, status = null;
     let isCodePath = false, codepath = null, codefile = null, codebranch = null;;
     let isCommit = false, commit_long = null, commit_short = null;
     let isProject = false, project_number = null, project_name = null, project_view_number, project_view_name = null;
@@ -191,6 +240,10 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
 
         isCodePath = (appRoute === 'blob' || appRoute === 'tree') && appPathRoot;
         isCommit = appRoute === 'commit' && appPathRoot;
+
+        if (isPull) {
+            status = detectPullStatus();
+        }
 
         if (isPullOrIssueOrDiscussion) {
             // Try to get the title directly from the DOM header, which is more
@@ -324,7 +377,7 @@ export default function getGitHubLinks({linkFormats}, { url, title }) {
     }
 
     return {
-        links: parseLinkFormats(linkFormats, { org, repo, number, author, title, url, origin, hostname, pathname, hash, codepath, codefile, codebranch, commit_long, commit_short, project_number, project_name, project_view_name }),
+        links: parseLinkFormats(linkFormats, { org, repo, number, author, title, url, origin, hostname, pathname, hash, codepath, codefile, codebranch, commit_long, commit_short, project_number, project_name, project_view_name, status }),
         urlOverride
     };
 }
