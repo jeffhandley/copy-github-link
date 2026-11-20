@@ -39,14 +39,22 @@ The extension comes with over 40 default link formats available, including these
 
 The `{title}` token removes the " by {author} · Pull Request #{number} · {org}/{repo}" suffix from GitHub's page title, and it also sanitizes the page title when viewing a code file or folder.
 
-The `{status}` token is available on pull request pages and reads the pull request's state from the page header. It produces one of `open`, `draft`, `queue` (in the merge queue), `merged`, or `closed`, which makes it easy to pair links with status-specific text or emoji. For example, with custom emoji named `:gh-pr-open:`, `:gh-pr-merged:`, etc.:
+The `{status}` token is available on pull request pages. It reads the pull request's state from the page header and produces one of a fixed set of values:
+
+| `{status}` | Pull request state |
+| --- | --- |
+| `open` | Open and ready for review |
+| `draft` | Draft |
+| `queue` | Queued in the merge queue |
+| `merged` | Merged |
+| `closed` | Closed without merging |
+
+Because the values are fixed, `{status}` can be used to build status-specific text, for example `[{status}] {title} (#{number})`. Like other tokens, a format that uses `{status}` is only shown when the status can be determined, so follow it with a fallback format. The first visible `<default>` format is used as the default:
 
 ```json
-["<default> :gh-pr-{status}: {title} (#{number})","{org}{repo}"],
+["<default> [{status}] {title} (#{number})","{org}{repo}"],
 ["<default> {title} (#{number})","{org}{repo}"]
 ```
-
-Like other tokens, a format using `{status}` is only shown when the status could be determined, so a fallback format can follow it; the first visible `<default>` format is used as the default.
 
 ## Usage, Demo, and Screenshots
 
